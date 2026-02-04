@@ -1,0 +1,27 @@
+# Code Owners for FlutterForge
+# These users will be requested for review on PRs
+
+# Default owners for everything
+* @muhittincamdali
+
+# Source code
+/lib/ @muhittincamdali
+/bin/ @muhittincamdali
+
+# Tests
+/test/ @muhittincamdali
+/integration_test/ @muhittincamdali
+
+# Example app
+/example/ @muhittincamdali
+
+# Documentation
+/Documentation/ @muhittincamdali
+*.md @muhittincamdali
+
+# CI/CD
+/.github/ @muhittincamdali
+
+# Package configuration
+pubspec.yaml @muhittincamdali
+analysis_options.yaml @muhittincamdali
