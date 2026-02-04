@@ -9,45 +9,53 @@
 
 ## Reporting a Vulnerability
 
-We take the security of SwiftRouter seriously. If you have discovered a security vulnerability, we appreciate your help in disclosing it to us in a responsible manner.
-
-### How to Report
-
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please report them via email to the repository owner. You can find contact information on the GitHub profile.
+Instead, please report them via email to: security@muhittincamdali.com
 
 Please include the following information:
 
-- Type of issue (e.g., deep link injection, state manipulation, etc.)
-- Full paths of source file(s) related to the manifestation of the issue
+- Type of issue (e.g., buffer overflow, SQL injection, cross-site scripting, etc.)
+- Full paths of source file(s) related to the issue
 - The location of the affected source code (tag/branch/commit or direct URL)
 - Any special configuration required to reproduce the issue
 - Step-by-step instructions to reproduce the issue
 - Proof-of-concept or exploit code (if possible)
 - Impact of the issue, including how an attacker might exploit it
 
-### What to Expect
+### Response Timeline
 
-- A confirmation of receipt within 48 hours
-- An assessment of the vulnerability within 7 days
-- Regular updates on our progress
-- Credit for responsible disclosure (if desired)
+- **Initial Response**: Within 48 hours
+- **Status Update**: Within 7 days
+- **Resolution**: Typically within 30 days, depending on complexity
+
+### Disclosure Policy
+
+- We will acknowledge your report within 48 hours
+- We will provide a more detailed response within 7 days
+- We will work with you to understand and resolve the issue
+- We will keep you informed of our progress
+- We will credit you in our security advisory (unless you prefer anonymity)
+
+## Preferred Languages
+
+We prefer all communications to be in English.
 
 ## Security Best Practices
 
-When using SwiftRouter in your projects:
+When using FlutterForge in your projects:
 
-1. **Validate Deep Links** - Always validate URL parameters before navigation
-2. **Use Route Guards** - Implement authentication guards for protected routes
-3. **Sanitize Parameters** - Never trust user input from URL parameters
-4. **Audit Navigation Paths** - Review which screens are accessible via deep links
+1. **Keep Dependencies Updated**: Regularly update your dependencies
+2. **Secure API Keys**: Never commit API keys or secrets
+3. **Use Environment Variables**: Store sensitive data in env files
+4. **Enable ProGuard/R8**: For release builds on Android
+5. **Code Signing**: Properly sign your release builds
 
 ## Security Features
 
-SwiftRouter includes several security considerations:
+FlutterForge includes several security best practices by default:
 
-- **Type-Safe Parameters** - Reduces injection risks
-- **Route Guards** - Authentication/authorization interceptors
-- **URL Validation** - Built-in URL parsing with validation
-- **No External Dependencies** - Minimal attack surface
+- Secure storage for sensitive data
+- Certificate pinning support
+- Biometric authentication helpers
+- Secure network configuration
