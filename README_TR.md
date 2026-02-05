@@ -11,10 +11,10 @@
     <img src="https://img.shields.io/github/license/muhittincamdali/FlutterForge" alt="Lisans">
   </a>
   <a href="https://flutter.dev">
-    <img src="https://img.shields.io/badge/Flutter-3.10+-02569B?logo=flutter" alt="Flutter">
+    <img src="https://img.shields.io/badge/Flutter-3.24+-02569B?logo=flutter" alt="Flutter">
   </a>
   <a href="https://dart.dev">
-    <img src="https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart" alt="Dart">
+    <img src="https://img.shields.io/badge/Dart-3.5+-0175C2?logo=dart" alt="Dart">
   </a>
 </p>
 
@@ -111,8 +111,8 @@ graph TB
 
 ### Gereksinimler
 
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) >= 3.10.0
-- [Dart SDK](https://dart.dev/get-dart) >= 3.0.0
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) >= 3.24.0
+- [Dart SDK](https://dart.dev/get-dart) >= 3.5.0
 
 ### Adımlar
 
