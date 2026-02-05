@@ -8,27 +8,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- visionOS navigation support
+- Desktop platform support (macOS, Windows, Linux)
 
 ## [1.0.0] - 2024-01-15
 
 ### Added
-- Type-safe navigation with compile-time checks
-- SwiftUI NavigationStack integration
-- Deep linking support with URL parsing
-- Tab bar coordination
-- Modal presentation handling
-- Navigation state persistence
-- Route parameters with type safety
-- Navigation interceptors (guards)
-- Animated transitions
-- Back stack management
-- Child router support (coordinator pattern)
+- CLI tool with `create` and `generate` commands
+- Clean Architecture project scaffolding
+- Riverpod 2.0 state management integration
+- GoRouter navigation with type-safe routes
+- Dio + Retrofit networking layer
+- Hive & SharedPreferences local storage
+- Material 3 theming with dark mode support
+- Easy Localization (i18n) setup
+- Feature-first folder structure generator
+- Model generator with JSON serialization (Freezed)
+- Repository, UseCase, Screen generators
+- GitHub Actions CI/CD pipeline templates
+- Comprehensive test setup (unit, widget, integration)
+- analysis_options.yaml with very_good_analysis
 
 ### Features
-- Zero dependencies
-- Protocol-oriented design
+- Zero-config project bootstrapping
+- Modular code generation
 - Full async/await support
+- iOS, Android, and Web platform support
 
-[Unreleased]: https://github.com/muhittincamdali/SwiftRouter/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/muhittincamdali/SwiftRouter/releases/tag/v1.0.0
+[Unreleased]: https://github.com/muhittincamdali/FlutterForge/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/muhittincamdali/FlutterForge/releases/tag/v1.0.0

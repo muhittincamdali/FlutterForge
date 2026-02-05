@@ -1,6 +1,9 @@
 name: flutter_forge
 description: Production-ready Flutter project template with clean architecture, Riverpod state management, and comprehensive tooling.
 version: 1.0.0
+homepage: https://github.com/muhittincamdali/FlutterForge
+repository: https://github.com/muhittincamdali/FlutterForge
+issue_tracker: https://github.com/muhittincamdali/FlutterForge/issues
 publish_to: 'none'
 
 environment:

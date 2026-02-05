@@ -1,83 +1,78 @@
-<h1 align="center">FlutterForge</h1>
+<h1 align="center">🔨 FlutterForge</h1>
 
 <p align="center">
-  <strong>🔨 Production-ready Flutter project template with CLI, Riverpod & clean architecture</strong>
+  <strong>Stop wasting hours on boilerplate. Generate production-ready Flutter projects with clean architecture in seconds.</strong>
 </p>
 
 <p align="center">
   <a href="https://github.com/muhittincamdali/FlutterForge/actions/workflows/ci.yml">
     <img src="https://github.com/muhittincamdali/FlutterForge/actions/workflows/ci.yml/badge.svg" alt="CI"/>
   </a>
-  <a href="https://pub.dev/packages/flutter_forge">
-    <img src="https://img.shields.io/badge/pub.dev-flutter__forge-blue?style=flat-square&logo=dart" alt="pub.dev"/>
+  <a href="https://github.com/muhittincamdali/FlutterForge/releases">
+    <img src="https://img.shields.io/github/v/release/muhittincamdali/FlutterForge?style=flat-square&color=blue" alt="Release"/>
   </a>
-  <img src="https://img.shields.io/badge/Flutter-3.24-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter 3.24"/>
-  <img src="https://img.shields.io/badge/Dart-3.5-0175C2?style=flat-square&logo=dart&logoColor=white" alt="Dart 3.5"/>
-  <img src="https://img.shields.io/badge/Platform-iOS%20%7C%20Android%20%7C%20Web-lightgrey?style=flat-square" alt="Platform"/>
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"/>
+  <img src="https://img.shields.io/badge/Flutter-3.24+-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter 3.24+"/>
+  <img src="https://img.shields.io/badge/Dart-3.5+-0175C2?style=flat-square&logo=dart&logoColor=white" alt="Dart 3.5+"/>
+  <img src="https://img.shields.io/badge/Platform-iOS%20%7C%20Android%20%7C%20Web%20%7C%20Desktop-lightgrey?style=flat-square" alt="Platform"/>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/github/license/muhittincamdali/FlutterForge?style=flat-square&color=green" alt="License"/>
+  </a>
 </p>
 
 <p align="center">
-  <a href="#features">Features</a> •
+  <a href="#why-flutterforge">Why FlutterForge?</a> •
   <a href="#installation">Installation</a> •
   <a href="#quick-start">Quick Start</a> •
+  <a href="#features">Features</a> •
   <a href="#documentation">Documentation</a> •
   <a href="#contributing">Contributing</a>
 </p>
 
 ---
 
-## 📋 Table of Contents
+## Why FlutterForge?
 
-- [Why FlutterForge?](#why-flutterforge)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-  - [Project Structure](#project-structure)
-  - [Code Generation](#code-generation)
-  - [State Management](#state-management)
-  - [Networking](#networking)
-  - [Theming](#theming)
-  - [Testing](#testing)
-- [CLI Commands](#cli-commands)
-- [CI/CD](#cicd)
-- [Contributing](#contributing)
-- [License](#license)
-- [Star History](#-star-history)
+Every Flutter project starts the same way — creating folders, configuring state management, setting up routing, writing DI boilerplate, adding networking layers. It takes **hours** before you write your first line of business logic.
+
+**FlutterForge eliminates that.** One command gives you a fully structured, production-grade Flutter project with all the best practices already in place.
+
+```bash
+flutter_forge create my_app    # Full project in ~5 seconds
+flutter_forge generate feature auth   # Clean architecture feature module
+```
+
+### How It Compares
+
+| | FlutterForge | Manual Setup | Other CLIs |
+|---|:---:|:---:|:---:|
+| Clean Architecture out of the box | ✅ | ❌ | ⚠️ Partial |
+| Riverpod 2.0 + GoRouter pre-configured | ✅ | Manual | ❌ |
+| Feature/Model/Repository generators | ✅ | N/A | ⚠️ Limited |
+| Dio + Retrofit networking layer | ✅ | Manual | ❌ |
+| CI/CD pipeline templates | ✅ | Manual | ❌ |
+| Material 3 + Dark mode theming | ✅ | Manual | ❌ |
+| Comprehensive test scaffolding | ✅ | Manual | ⚠️ Basic |
+| Time to first feature | **~30 sec** | **2-4 hours** | **30-60 min** |
 
 ---
 
-## Why FlutterForge?
-
-Starting a new Flutter project means hours of setup - folder structure, state management, DI, routing, theming. **FlutterForge** gives you a production-ready foundation in seconds.
-
-```bash
-# Create new project with best practices baked in
-flutter_forge create my_app
-
-# Generate features following clean architecture
-flutter_forge generate feature auth
-flutter_forge generate model User
-flutter_forge generate repository UserRepository
-```
-
 ## Features
 
-| Feature | Implementation |
-|---------|---------------|
-| 🏗️ **Architecture** | Clean Architecture + Feature-first |
-| 🔄 **State** | Riverpod 2.0 |
-| 🧭 **Routing** | GoRouter with type-safe routes |
-| 💉 **DI** | Riverpod dependency injection |
-| 🌐 **Network** | Dio + Retrofit code generation |
-| 💾 **Storage** | Hive + SharedPreferences |
-| 🎨 **Theming** | Material 3 + Dark mode |
-| 🌍 **i18n** | Easy Localization |
-| 🧪 **Testing** | Unit + Widget + Integration |
-| 🚀 **CI/CD** | GitHub Actions ready |
-| 📱 **Platform** | iOS, Android, Web, Desktop |
+| Feature | Implementation | Description |
+|---------|---------------|-------------|
+| 🏗️ **Architecture** | Clean Architecture + Feature-first | Scalable, testable, maintainable |
+| 🔄 **State Management** | Riverpod 2.0 | Reactive, compile-safe providers |
+| 🧭 **Routing** | GoRouter | Type-safe, deep link ready |
+| 💉 **Dependency Injection** | Riverpod DI | No service locator needed |
+| 🌐 **Networking** | Dio + Retrofit | Code-generated API clients |
+| 💾 **Local Storage** | Hive + SharedPreferences | Fast key-value & structured storage |
+| 🎨 **Theming** | Material 3 | Light/dark mode with custom tokens |
+| 🌍 **Internationalization** | Easy Localization | Multi-language from day one |
+| 🧪 **Testing** | Unit + Widget + Integration | Full test pyramid support |
+| 🚀 **CI/CD** | GitHub Actions | Lint, test, build, deploy pipelines |
+| 📱 **Platforms** | iOS, Android, Web, Desktop | True cross-platform |
+
+---
 
 ## Requirements
 
@@ -86,11 +81,13 @@ flutter_forge generate repository UserRepository
 | Flutter | 3.24+ |
 | Dart | 3.5+ |
 | iOS | 12.0+ |
-| Android | API 21+ (Android 5.0) |
+| Android | API 21+ (5.0 Lollipop) |
+
+---
 
 ## Installation
 
-### Global Activation
+### Global Activation (Recommended)
 
 ```bash
 dart pub global activate flutter_forge
@@ -103,9 +100,17 @@ dev_dependencies:
   flutter_forge: ^1.0.0
 ```
 
+Then run:
+
+```bash
+flutter pub get
+```
+
+---
+
 ## Quick Start
 
-### Create a New Project
+### 1. Create a New Project
 
 ```bash
 flutter_forge create my_awesome_app
@@ -113,28 +118,40 @@ cd my_awesome_app
 flutter run
 ```
 
-### Generate a Feature
+### 2. Generate a Feature Module
 
 ```bash
 flutter_forge generate feature profile
 ```
 
-This creates:
+This generates a complete clean architecture module:
+
 ```
 lib/features/profile/
 ├── data/
-│   ├── datasources/
-│   ├── models/
-│   └── repositories/
+│   ├── datasources/       # Remote & local data sources
+│   ├── models/            # DTOs with JSON serialization
+│   └── repositories/      # Repository implementations
 ├── domain/
-│   ├── entities/
-│   ├── repositories/
-│   └── usecases/
+│   ├── entities/          # Business entities
+│   ├── repositories/      # Repository contracts
+│   └── usecases/          # Business logic
 └── presentation/
-    ├── providers/
-    ├── screens/
-    └── widgets/
+    ├── providers/         # Riverpod providers
+    ├── screens/           # Page widgets
+    └── widgets/           # Feature-specific widgets
 ```
+
+### 3. Generate Individual Components
+
+```bash
+flutter_forge generate model User          # Freezed model + JSON
+flutter_forge generate repository UserRepo # Interface + implementation
+flutter_forge generate usecase GetProfile  # Use case with repository DI
+flutter_forge generate screen Settings     # Screen + provider wiring
+```
+
+---
 
 ## Documentation
 
@@ -143,13 +160,13 @@ lib/features/profile/
 ```
 lib/
 ├── app/
-│   ├── app.dart              # App widget
+│   ├── app.dart              # App widget with MaterialApp
 │   └── router.dart           # GoRouter configuration
 ├── core/
-│   ├── network/              # Dio setup, interceptors
-│   ├── storage/              # Local storage
-│   ├── theme/                # Theme data
-│   └── utils/                # Helpers, extensions
+│   ├── network/              # Dio client, interceptors, error handling
+│   ├── storage/              # Hive boxes, SharedPreferences wrapper
+│   ├── theme/                # ThemeData, color schemes, typography
+│   └── utils/                # Extensions, helpers, constants
 ├── features/
 │   ├── auth/                 # Authentication feature
 │   │   ├── data/
@@ -157,39 +174,23 @@ lib/
 │   │   └── presentation/
 │   └── home/                 # Home feature
 ├── shared/
-│   ├── widgets/              # Reusable widgets
+│   ├── widgets/              # Cross-feature reusable widgets
 │   └── extensions/           # Dart extensions
-└── main.dart                 # Entry point
-```
-
-### Code Generation
-
-```bash
-# Generate a model with JSON serialization
-flutter_forge generate model User
-
-# Generate a repository with interface
-flutter_forge generate repository UserRepository
-
-# Generate a use case
-flutter_forge generate usecase GetUserProfile
-
-# Generate a screen with provider
-flutter_forge generate screen Settings
+└── main.dart                 # Entry point with ProviderScope
 ```
 
 ### State Management
 
-Using Riverpod 2.0 for reactive state management:
+Riverpod 2.0 with code generation:
 
 ```dart
-// Provider definition
+// Define a provider
 final userProvider = FutureProvider<User>((ref) async {
   final repository = ref.read(userRepositoryProvider);
   return repository.getCurrentUser();
 });
 
-// Usage in widget
+// Consume in a widget
 class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -206,7 +207,7 @@ class ProfileScreen extends ConsumerWidget {
 
 ### Networking
 
-Type-safe API client with Retrofit:
+Type-safe API client powered by Retrofit:
 
 ```dart
 @RestApi()
@@ -229,15 +230,13 @@ abstract class ApiClient {
 
 ### Theming
 
-Automatic light/dark mode support:
+Material 3 with automatic light/dark switching:
 
 ```dart
-// Theme provider
 final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
   return ThemeNotifier();
 });
 
-// Usage in app
 MaterialApp(
   themeMode: ref.watch(themeProvider),
   theme: AppTheme.light,
@@ -248,14 +247,9 @@ MaterialApp(
 ### Testing
 
 ```bash
-# Run all tests
-flutter test
-
-# Run with coverage
-flutter test --coverage
-
-# Run integration tests
-flutter test integration_test/
+flutter test                        # All tests
+flutter test --coverage             # With coverage report
+flutter test integration_test/      # Integration tests
 ```
 
 Example test:
@@ -283,26 +277,34 @@ void main() {
 }
 ```
 
+---
+
 ## CLI Commands
 
 | Command | Description |
 |---------|-------------|
-| `create <name>` | Create a new project |
-| `generate feature <name>` | Generate a new feature module |
-| `generate model <name>` | Generate a model with JSON |
-| `generate repository <name>` | Generate a repository |
-| `generate usecase <name>` | Generate a use case |
-| `generate screen <name>` | Generate a screen |
-| `generate widget <name>` | Generate a widget |
+| `create <name>` | Scaffold a new Flutter project |
+| `generate feature <name>` | Generate a clean architecture feature module |
+| `generate model <name>` | Generate a Freezed model with JSON serialization |
+| `generate repository <name>` | Generate a repository (interface + impl) |
+| `generate usecase <name>` | Generate a use case class |
+| `generate screen <name>` | Generate a screen with provider |
+| `generate widget <name>` | Generate a reusable widget |
+
+---
 
 ## CI/CD
 
 Pre-configured GitHub Actions workflows:
 
-- **Lint** - Code analysis on every PR
-- **Test** - Run tests on every PR
-- **Build** - Build artifacts on main
-- **Deploy** - Optional store deployment
+| Workflow | Trigger | What It Does |
+|----------|---------|--------------|
+| **Lint** | Every PR | Runs `flutter analyze` |
+| **Test** | Every PR | Runs full test suite with coverage |
+| **Build** | Push to `main` | Builds release artifacts |
+| **Deploy** | Tag `v*` | Optional store deployment |
+
+---
 
 ## Contributing
 
@@ -313,6 +315,10 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+See the [open issues](https://github.com/muhittincamdali/FlutterForge/issues) for a list of proposed features and known issues.
+
+---
 
 ## License
 
