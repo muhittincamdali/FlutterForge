@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="assets/logo.png" alt="FlutterForge" width="200"/>
-</p>
-
 <h1 align="center">FlutterForge</h1>
 
 <p align="center">
