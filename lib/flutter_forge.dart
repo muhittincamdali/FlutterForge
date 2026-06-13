@@ -29,7 +29,7 @@ export 'src/architecture/mvvm/model.dart';
 
 // Architecture exports - Riverpod
 export 'src/architecture/riverpod/providers.dart';
-export 'src/architecture/riverpod/notifiers.dart';
+export 'src/architecture/riverpod/notifiers.dart' hide PaginatedState, SelectionState;
 
 // Networking exports
 export 'src/networking/api_client.dart';

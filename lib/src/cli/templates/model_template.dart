@@ -147,7 +147,7 @@ class ModelTemplate {
     // JSON factory
     if (includeJson) {
       buffer.writeln('  /// Creates a model from JSON.');
-      buffer.writeln('  factory $modelName.fromJson(Map<String, dynamic> json) =>');
+      buffer.writeln('  factory $modelName.fromJson(Map<String, Object?> json) =>');
       buffer.writeln('      _\$${modelName}FromJson(json);');
     }
 
@@ -216,11 +216,11 @@ class ModelTemplate {
     // JSON methods
     if (includeJson) {
       buffer.writeln('  /// Creates a model from JSON.');
-      buffer.writeln('  factory $modelName.fromJson(Map<String, dynamic> json) =>');
+      buffer.writeln('  factory $modelName.fromJson(Map<String, Object?> json) =>');
       buffer.writeln('      _\$${modelName}FromJson(json);');
       buffer.writeln();
       buffer.writeln('  /// Converts this model to JSON.');
-      buffer.writeln('  Map<String, dynamic> toJson() => _\$${modelName}ToJson(this);');
+      buffer.writeln('  Map<String, Object?> toJson() => _\$${modelName}ToJson(this);');
       buffer.writeln();
     }
 
@@ -304,11 +304,11 @@ class ModelTemplate {
     // JSON methods
     if (includeJson) {
       buffer.writeln('  /// Creates a model from JSON.');
-      buffer.writeln('  factory $modelName.fromJson(Map<String, dynamic> json) =>');
+      buffer.writeln('  factory $modelName.fromJson(Map<String, Object?> json) =>');
       buffer.writeln('      _\$${modelName}FromJson(json);');
       buffer.writeln();
       buffer.writeln('  /// Converts this model to JSON.');
-      buffer.writeln('  Map<String, dynamic> toJson() => _\$${modelName}ToJson(this);');
+      buffer.writeln('  Map<String, Object?> toJson() => _\$${modelName}ToJson(this);');
       buffer.writeln();
     }
 

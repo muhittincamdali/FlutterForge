@@ -408,7 +408,7 @@ class RepositoryTemplate {
     buffer.writeln('  });');
     buffer.writeln();
     buffer.writeln('  /// The API client for making network requests.');
-    buffer.writeln('  final dynamic apiClient; // Replace with your API client type');
+    buffer.writeln('  final Object? apiClient; // Replace with your API client type');
     buffer.writeln();
 
     for (final method in methods) {

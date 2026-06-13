@@ -312,7 +312,7 @@ class ${featureNamePascal}Model with _\$${featureNamePascal}Model {
   const ${featureNamePascal}Model._();
 
   /// Creates a model from JSON.
-  factory ${featureNamePascal}Model.fromJson(Map<String, dynamic> json) =>
+  factory ${featureNamePascal}Model.fromJson(Map<String, Object?> json) =>
       _\$${featureNamePascal}ModelFromJson(json);
 
   /// Creates a model from an entity.

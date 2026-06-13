@@ -105,16 +105,16 @@ class AppTheme {
     );
   }
 
-  static CardTheme _cardTheme(Brightness brightness) {
+  static CardThemeData _cardTheme(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
-    return CardTheme(
+    return CardThemeData(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: isDark
-              ? AppColors.darkOutline.withOpacity(0.2)
-              : AppColors.lightOutline.withOpacity(0.2),
+              ? AppColors.darkOutline.withValues(alpha: 0.2)
+              : AppColors.lightOutline.withValues(alpha: 0.2),
         ),
       ),
       color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
@@ -175,8 +175,8 @@ class AppTheme {
     return InputDecorationTheme(
       filled: true,
       fillColor: isDark
-          ? AppColors.darkSurfaceVariant.withOpacity(0.5)
-          : AppColors.lightSurfaceVariant.withOpacity(0.5),
+          ? AppColors.darkSurfaceVariant.withValues(alpha: 0.5)
+          : AppColors.lightSurfaceVariant.withValues(alpha: 0.5),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -184,7 +184,7 @@ class AppTheme {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: borderColor.withOpacity(0.5)),
+        borderSide: BorderSide(color: borderColor.withValues(alpha: 0.5)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -258,11 +258,11 @@ class AppTheme {
     );
   }
 
-  static DialogTheme _dialogTheme(Brightness brightness) {
-    return DialogTheme(
+  static DialogThemeData _dialogTheme(Brightness brightness) {
+    return DialogThemeData(
       elevation: 3,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
       ),
     );
   }
@@ -291,8 +291,8 @@ class AppTheme {
       thickness: 1,
       space: 1,
       color: isDark
-          ? AppColors.darkOutline.withOpacity(0.2)
-          : AppColors.lightOutline.withOpacity(0.2),
+          ? AppColors.darkOutline.withValues(alpha: 0.2)
+          : AppColors.lightOutline.withValues(alpha: 0.2),
     );
   }
 
@@ -333,8 +333,8 @@ class AppTheme {
     );
   }
 
-  static TabBarTheme _tabBarTheme(Brightness brightness) {
-    return TabBarTheme(
+  static TabBarThemeData _tabBarTheme(Brightness brightness) {
+    return TabBarThemeData(
       labelStyle: AppTypography.textTheme.labelLarge?.copyWith(
         fontWeight: FontWeight.w600,
       ),

@@ -231,7 +231,7 @@ class DeepLinkBuilder {
 /// App link association file generator.
 class AppLinksGenerator {
   /// Generates Android assetlinks.json content.
-  static Map<String, dynamic> generateAssetLinks({
+  static Map<String, Object?> generateAssetLinks({
     required String packageName,
     required String sha256Fingerprint,
   }) {
@@ -246,7 +246,7 @@ class AppLinksGenerator {
   }
 
   /// Generates iOS apple-app-site-association content.
-  static Map<String, dynamic> generateAppleAppSiteAssociation({
+  static Map<String, Object?> generateAppleAppSiteAssociation({
     required String appId,
     required List<String> paths,
   }) {

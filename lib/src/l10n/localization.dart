@@ -67,7 +67,7 @@ class AppLocalizations {
   late final Translations _translations = Translations.forLocale(locale);
 
   /// Gets a translation by key.
-  String translate(String key, [Map<String, dynamic>? params]) {
+  String translate(String key, [Map<String, Object?>? params]) {
     var text = _translations.get(key);
     if (params != null) {
       params.forEach((paramKey, value) {
@@ -78,7 +78,7 @@ class AppLocalizations {
   }
 
   /// Gets plural form.
-  String plural(String key, int count, [Map<String, dynamic>? params]) {
+  String plural(String key, int count, [Map<String, Object?>? params]) {
     final baseKey = count == 1 ? '${key}_one' : '${key}_other';
     final finalParams = {...?params, 'count': count};
     return translate(baseKey, finalParams);

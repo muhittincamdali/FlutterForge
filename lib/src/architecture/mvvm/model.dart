@@ -269,7 +269,7 @@ class ValidationBuilder {
 /// Mixin for models that can be serialized.
 mixin Serializable {
   /// Converts to JSON map.
-  Map<String, dynamic> toJson();
+  Map<String, Object?> toJson();
 }
 
 /// Mixin for models that can be cloned.
@@ -287,12 +287,12 @@ mixin Comparable<T> {
 /// Factory for creating models from JSON.
 abstract class ModelFactory<T> {
   /// Creates a model from JSON.
-  T fromJson(Map<String, dynamic> json);
+  T fromJson(Map<String, Object?> json);
 
   /// Creates a list of models from JSON.
-  List<T> fromJsonList(List<dynamic> jsonList) {
+  List<T> fromJsonList(List<Object?> jsonList) {
     return jsonList
-        .whereType<Map<String, dynamic>>()
+        .whereType<Map<String, Object?>>()
         .map(fromJson)
         .toList();
   }
