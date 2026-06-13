@@ -136,7 +136,7 @@ class ScopedLocator {
   /// Parent locator for hierarchical lookup.
   final ScopedLocator? parent;
 
-  final Map<Type, dynamic> _services = {};
+  final Map<Type, Object?> _services = {};
 
   /// Registers a scoped service.
   void register<T>(T service) {

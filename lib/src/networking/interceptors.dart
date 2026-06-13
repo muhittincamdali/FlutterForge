@@ -119,8 +119,8 @@ class LoggingInterceptor extends RequestInterceptor {
   }
 
   @override
-  Future<ApiResponse<dynamic>> onResponse(
-      ApiResponse<dynamic> response) async {
+  Future<ApiResponse<Object?>> onResponse(
+      ApiResponse<Object?> response) async {
     if (!logResponse) return response;
 
     final buffer = StringBuffer();
@@ -159,7 +159,7 @@ class LoggingInterceptor extends RequestInterceptor {
     _log(buffer.toString());
   }
 
-  String _formatBody(dynamic body) {
+  String _formatBody(Object? body) {
     String result;
     if (body is Map || body is List) {
       try {
@@ -240,7 +240,7 @@ class CacheInterceptor extends RequestInterceptor {
   final Set<HttpMethod> cacheableMethods;
 
   /// Custom function to determine if a response should be cached.
-  final bool Function(ApiResponse<dynamic>)? shouldCache;
+  final bool Function(ApiResponse<Object?>)? shouldCache;
 
   final Map<String, _CacheEntry> _cache = {};
 
@@ -264,8 +264,8 @@ class CacheInterceptor extends RequestInterceptor {
   }
 
   @override
-  Future<ApiResponse<dynamic>> onResponse(
-      ApiResponse<dynamic> response) async {
+  Future<ApiResponse<Object?>> onResponse(
+      ApiResponse<Object?> response) async {
     final options = response.requestOptions;
     if (options == null || !cacheableMethods.contains(options.method)) {
       return response;
@@ -341,7 +341,7 @@ class _CacheEntry {
     required this.maxAge,
   });
 
-  final ApiResponse<dynamic> response;
+  final ApiResponse<Object?> response;
   final DateTime timestamp;
   final Duration maxAge;
 
@@ -441,8 +441,8 @@ class MetricsInterceptor extends RequestInterceptor {
   }
 
   @override
-  Future<ApiResponse<dynamic>> onResponse(
-      ApiResponse<dynamic> response) async {
+  Future<ApiResponse<Object?>> onResponse(
+      ApiResponse<Object?> response) async {
     final path = response.requestOptions?.path;
     if (path != null) {
       final startTime = _startTimes.remove(path);

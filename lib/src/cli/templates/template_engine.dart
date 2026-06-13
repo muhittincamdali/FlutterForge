@@ -287,7 +287,7 @@ linter:
     public_member_api_docs: false
     lines_longer_than_80_chars: false
     flutter_style_todos: true
-    avoid_dynamic_calls: true
+    avoid_Object?_calls: true
     avoid_type_to_string: true
     cancel_subscriptions: true
     close_sinks: true

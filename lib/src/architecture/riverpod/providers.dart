@@ -13,7 +13,7 @@ final dependencyContainerProvider = Provider<DependencyContainer>((ref) {
 
 /// Simple dependency container for providers.
 class DependencyContainer {
-  final Map<Type, dynamic> _singletons = {};
+  final Map<Type, Object?> _singletons = {};
   final Map<Type, dynamic Function()> _factories = {};
 
   /// Registers a singleton.

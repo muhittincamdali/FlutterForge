@@ -181,7 +181,7 @@ class SimpleRouter {
   }
 
   /// Generates a route for the given settings.
-  Route<dynamic>? generateRoute(RouteSettings settings) {
+  Route<Object?>? generateRoute(RouteSettings settings) {
     final config = _routeMap[settings.name];
     if (config == null) {
       if (onUnknownRoute != null) {
@@ -261,7 +261,7 @@ class NavigationService {
     String routeName, {
     Object? arguments,
   }) {
-    return _navigator?.pushReplacementNamed<T, dynamic>(
+    return _navigator?.pushReplacementNamed<T, Object?>(
       routeName,
       arguments: arguments,
     );

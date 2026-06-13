@@ -158,7 +158,7 @@ class SearchParams extends Equatable {
   final int pageSize;
 
   /// Additional filters for the search.
-  final Map<String, dynamic> filters;
+  final Map<String, Object?> filters;
 
   @override
   List<Object?> get props => [query, page, pageSize, filters];

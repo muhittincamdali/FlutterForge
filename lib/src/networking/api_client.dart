@@ -73,13 +73,13 @@ class RequestOptions {
   final HttpMethod method;
 
   /// Query parameters.
-  final Map<String, dynamic>? queryParameters;
+  final Map<String, Object?>? queryParameters;
 
   /// Request headers.
   final Map<String, String>? headers;
 
   /// Request body.
-  final dynamic body;
+  final Object? body;
 
   /// Content type.
   final String? contentType;
@@ -94,20 +94,20 @@ class RequestOptions {
   final CancelToken? cancelToken;
 
   /// Extra data.
-  final Map<String, dynamic>? extra;
+  final Map<String, Object?>? extra;
 
   /// Creates a copy with updated fields.
   RequestOptions copyWith({
     String? path,
     HttpMethod? method,
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
-    dynamic body,
+    Object? body,
     String? contentType,
     ResponseType? responseType,
     Duration? timeout,
     CancelToken? cancelToken,
-    Map<String, dynamic>? extra,
+    Map<String, Object?>? extra,
   }) {
     return RequestOptions(
       path: path ?? this.path,
@@ -201,7 +201,7 @@ abstract class ApiClient {
   /// Performs a GET request.
   Future<ApiResponse<T>> get<T>(
     String path, {
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
   }) {
@@ -219,8 +219,8 @@ abstract class ApiClient {
   /// Performs a POST request.
   Future<ApiResponse<T>> post<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
   }) {
@@ -239,8 +239,8 @@ abstract class ApiClient {
   /// Performs a PUT request.
   Future<ApiResponse<T>> put<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
   }) {
@@ -259,8 +259,8 @@ abstract class ApiClient {
   /// Performs a PATCH request.
   Future<ApiResponse<T>> patch<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
   }) {
@@ -279,8 +279,8 @@ abstract class ApiClient {
   /// Performs a DELETE request.
   Future<ApiResponse<T>> delete<T>(
     String path, {
-    dynamic body,
-    Map<String, dynamic>? queryParameters,
+    Object? body,
+    Map<String, Object?>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
   }) {
@@ -362,7 +362,7 @@ class SimpleApiClient extends ApiClient {
       final responseBody = await response.transform(utf8.decoder).join();
 
       // Parse response
-      dynamic data;
+      Object? data;
       if (responseBody.isNotEmpty) {
         try {
           data = jsonDecode(responseBody);
@@ -433,8 +433,8 @@ abstract class RequestInterceptor {
   Future<RequestOptions> onRequest(RequestOptions options) async => options;
 
   /// Called after a response is received.
-  Future<ApiResponse<dynamic>> onResponse(
-      ApiResponse<dynamic> response) async => response;
+  Future<ApiResponse<Object?>> onResponse(
+      ApiResponse<Object?> response) async => response;
 
   /// Called when an error occurs.
   Future<void> onError(ApiException error) async {}
@@ -457,7 +457,7 @@ class ApiException implements Exception {
   final int statusCode;
 
   /// Response data.
-  final dynamic data;
+  final Object? data;
 
   /// Stack trace.
   final StackTrace? stackTrace;

@@ -20,7 +20,7 @@ abstract class Endpoints {
   String withId(String id) => buildPath([id]);
 
   /// Builds a path with query parameters.
-  String withQuery(String path, Map<String, dynamic> params) {
+  String withQuery(String path, Map<String, Object?> params) {
     if (params.isEmpty) return path;
 
     final queryString = params.entries
@@ -147,7 +147,7 @@ class ResourceEndpoints<T> extends Endpoints {
   }
 
   /// Filtered resources.
-  String filtered(Map<String, dynamic> filters) =>
+  String filtered(Map<String, Object?> filters) =>
       withQuery(basePath, filters);
 }
 
@@ -192,7 +192,7 @@ class UrlBuilder {
   final Map<String, String> defaultHeaders;
 
   /// Builds a full URL.
-  Uri build(String path, {Map<String, dynamic>? queryParameters}) {
+  Uri build(String path, {Map<String, Object?>? queryParameters}) {
     final uri = Uri.parse('$baseUrl$path');
     if (queryParameters == null || queryParameters.isEmpty) {
       return uri;
@@ -209,7 +209,7 @@ class UrlBuilder {
   Uri buildWithParams(
     String path,
     Map<String, String> pathParams, {
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
   }) {
     var resolvedPath = path;
     pathParams.forEach((key, value) {

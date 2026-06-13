@@ -138,7 +138,7 @@ class TypedSecureStorage {
   Future<UserCredentials?> getCredentials() async {
     final json = await _storage.read(key: SecureStorageKeys.credentials);
     if (json == null) return null;
-    return UserCredentials.fromJson(jsonDecode(json) as Map<String, dynamic>);
+    return UserCredentials.fromJson(jsonDecode(json) as Map<String, Object?>);
   }
 
   /// Clears all authentication data.
@@ -197,7 +197,7 @@ class UserCredentials {
   });
 
   /// Creates credentials from JSON.
-  factory UserCredentials.fromJson(Map<String, dynamic> json) {
+  factory UserCredentials.fromJson(Map<String, Object?> json) {
     return UserCredentials(
       email: json['email'] as String,
       password: json['password'] as String?,
@@ -219,7 +219,7 @@ class UserCredentials {
   final bool rememberMe;
 
   /// Converts to JSON.
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toJson() {
     return {
       'email': email,
       'password': password,
@@ -239,7 +239,7 @@ class TokenPair {
   });
 
   /// Creates from JSON.
-  factory TokenPair.fromJson(Map<String, dynamic> json) {
+  factory TokenPair.fromJson(Map<String, Object?> json) {
     return TokenPair(
       accessToken: json['access_token'] as String,
       refreshToken: json['refresh_token'] as String?,
@@ -268,7 +268,7 @@ class TokenPair {
       DateTime.now().add(const Duration(minutes: 5)).isAfter(expiresAt!);
 
   /// Converts to JSON.
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toJson() {
     return {
       'access_token': accessToken,
       'refresh_token': refreshToken,
