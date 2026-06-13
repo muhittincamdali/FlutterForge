@@ -146,12 +146,12 @@ void main() {
     test('PaginatedState appendItems works correctly', () {
       const state = PaginatedState<String>(
         items: ['a', 'b'],
-        page: 1,
+        currentPage: 1,
       );
       final newState = state.appendItems(['c', 'd']);
 
       expect(newState.items, equals(['a', 'b', 'c', 'd']));
-      expect(newState.page, equals(2));
+      expect(newState.currentPage, equals(2));
     });
 
     test('FormState tracks dirty state correctly', () {

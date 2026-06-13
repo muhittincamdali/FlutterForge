@@ -39,35 +39,35 @@ abstract class LocalStorage {
   Future<List<String>?> getStringList(String key);
 
   /// Stores a JSON object.
-  Future<void> setJson(String key, Map<String, dynamic> value);
+  Future<void> setJson(String key, Map<String, Object?> value);
 
   /// Retrieves a JSON object.
-  Future<Map<String, dynamic>?> getJson(String key);
+  Future<Map<String, Object?>?> getJson(String key);
 
   /// Stores a typed object.
   Future<void> setObject<T>(
     String key,
     T value,
-    Map<String, dynamic> Function(T) toJson,
+    Map<String, Object?> Function(T) toJson,
   );
 
   /// Retrieves a typed object.
   Future<T?> getObject<T>(
     String key,
-    T Function(Map<String, dynamic>) fromJson,
+    T Function(Map<String, Object?>) fromJson,
   );
 
   /// Stores a list of typed objects.
   Future<void> setObjectList<T>(
     String key,
     List<T> value,
-    Map<String, dynamic> Function(T) toJson,
+    Map<String, Object?> Function(T) toJson,
   );
 
   /// Retrieves a list of typed objects.
   Future<List<T>?> getObjectList<T>(
     String key,
-    T Function(Map<String, dynamic>) fromJson,
+    T Function(Map<String, Object?>) fromJson,
   );
 
   /// Removes a value.
@@ -87,7 +87,7 @@ abstract class LocalStorage {
 ///
 /// Useful for testing or temporary storage.
 class InMemoryStorage implements LocalStorage {
-  final Map<String, dynamic> _storage = {};
+  final Map<String, Object?> _storage = {};
 
   @override
   Future<void> setString(String key, String value) async {
@@ -142,22 +142,22 @@ class InMemoryStorage implements LocalStorage {
   }
 
   @override
-  Future<void> setJson(String key, Map<String, dynamic> value) async {
-    _storage[key] = Map<String, dynamic>.from(value);
+  Future<void> setJson(String key, Map<String, Object?> value) async {
+    _storage[key] = Map<String, Object?>.from(value);
   }
 
   @override
-  Future<Map<String, dynamic>?> getJson(String key) async {
+  Future<Map<String, Object?>?> getJson(String key) async {
     final value = _storage[key];
     if (value == null) return null;
-    return Map<String, dynamic>.from(value as Map);
+    return Map<String, Object?>.from(value as Map);
   }
 
   @override
   Future<void> setObject<T>(
     String key,
     T value,
-    Map<String, dynamic> Function(T) toJson,
+    Map<String, Object?> Function(T) toJson,
   ) async {
     _storage[key] = toJson(value);
   }
@@ -165,7 +165,7 @@ class InMemoryStorage implements LocalStorage {
   @override
   Future<T?> getObject<T>(
     String key,
-    T Function(Map<String, dynamic>) fromJson,
+    T Function(Map<String, Object?>) fromJson,
   ) async {
     final json = await getJson(key);
     if (json == null) return null;
@@ -176,7 +176,7 @@ class InMemoryStorage implements LocalStorage {
   Future<void> setObjectList<T>(
     String key,
     List<T> value,
-    Map<String, dynamic> Function(T) toJson,
+    Map<String, Object?> Function(T) toJson,
   ) async {
     _storage[key] = value.map(toJson).toList();
   }
@@ -184,12 +184,12 @@ class InMemoryStorage implements LocalStorage {
   @override
   Future<List<T>?> getObjectList<T>(
     String key,
-    T Function(Map<String, dynamic>) fromJson,
+    T Function(Map<String, Object?>) fromJson,
   ) async {
     final value = _storage[key];
     if (value == null) return null;
     return (value as List)
-        .map((e) => fromJson(e as Map<String, dynamic>))
+        .map((e) => fromJson(e as Map<String, Object?>))
         .toList();
   }
 
@@ -316,14 +316,14 @@ class StorageEntry<T> {
       return;
     }
 
-    if (T == String || T == String?) {
-      await _storage.setString(key, value as String);
-    } else if (T == int) {
-      await _storage.setInt(key, value as int);
-    } else if (T == double) {
-      await _storage.setDouble(key, value as double);
-    } else if (T == bool) {
-      await _storage.setBool(key, value as bool);
+    if (value is String) {
+      await _storage.setString(key, value);
+    } else if (value is int) {
+      await _storage.setInt(key, value);
+    } else if (value is double) {
+      await _storage.setDouble(key, value);
+    } else if (value is bool) {
+      await _storage.setBool(key, value);
     }
   }
 
@@ -340,7 +340,7 @@ class BatchStorage {
   BatchStorage(this._storage);
 
   final LocalStorage _storage;
-  final Map<String, dynamic> _pending = {};
+  final Map<String, Object?> _pending = {};
 
   /// Queues a string value for batch write.
   void queueString(String key, String value) => _pending[key] = value;

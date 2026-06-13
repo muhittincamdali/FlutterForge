@@ -102,7 +102,7 @@ abstract class ListNotifier<T> extends StateNotifier<AsyncValue<List<T>>> {
   }
 
   /// Gets the ID of an item.
-  dynamic getId(T item);
+  Object? getId(T item);
 
   /// Fetches all items.
   Future<List<T>> fetchAll();
@@ -114,7 +114,7 @@ abstract class ListNotifier<T> extends StateNotifier<AsyncValue<List<T>>> {
   Future<T> update(T item);
 
   /// Deletes an item by ID.
-  Future<void> delete(dynamic id);
+  Future<void> delete(Object? id);
 }
 
 /// Base notifier for paginated data.

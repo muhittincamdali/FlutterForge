@@ -209,13 +209,13 @@ class FilterOptions {
   });
 
   /// The filter criteria.
-  final Map<String, dynamic> filters;
+  final Map<String, Object?> filters;
 
   /// The sort options.
   final SortOptions? sort;
 
   /// Creates a copy with additional filters.
-  FilterOptions withFilter(String key, dynamic value) {
+  FilterOptions withFilter(String key, Object? value) {
     return FilterOptions(
       filters: {...filters, key: value},
       sort: sort,
@@ -242,31 +242,31 @@ class QueryBuilder<T> {
   int? _offset;
 
   /// Adds a where condition.
-  QueryBuilder<T> where(String field, dynamic value) {
+  QueryBuilder<T> where(String field, Object? value) {
     _conditions.add(_QueryCondition(field, _Operator.equals, value));
     return this;
   }
 
   /// Adds a not equal condition.
-  QueryBuilder<T> whereNot(String field, dynamic value) {
+  QueryBuilder<T> whereNot(String field, Object? value) {
     _conditions.add(_QueryCondition(field, _Operator.notEquals, value));
     return this;
   }
 
   /// Adds a greater than condition.
-  QueryBuilder<T> whereGreaterThan(String field, dynamic value) {
+  QueryBuilder<T> whereGreaterThan(String field, Object? value) {
     _conditions.add(_QueryCondition(field, _Operator.greaterThan, value));
     return this;
   }
 
   /// Adds a less than condition.
-  QueryBuilder<T> whereLessThan(String field, dynamic value) {
+  QueryBuilder<T> whereLessThan(String field, Object? value) {
     _conditions.add(_QueryCondition(field, _Operator.lessThan, value));
     return this;
   }
 
   /// Adds an in condition.
-  QueryBuilder<T> whereIn(String field, List<dynamic> values) {
+  QueryBuilder<T> whereIn(String field, List<Object?> values) {
     _conditions.add(_QueryCondition(field, _Operator.inList, values));
     return this;
   }
@@ -346,7 +346,7 @@ class _QueryCondition {
 
   final String field;
   final _Operator operator;
-  final dynamic value;
+  final Object? value;
 }
 
 /// Mixin for repositories with offline support.

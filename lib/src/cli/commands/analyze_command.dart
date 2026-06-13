@@ -209,7 +209,7 @@ class AnalyzeCommand extends Command<int> with ForgeCommandMixin {
         final content = await entity.readAsString();
         totalLines += content.split('\n').length;
         totalClasses += RegExp(r'\bclass\s+\w+').allMatches(content).length;
-        totalFunctions += RegExp(r'\b(void|Future|String|int|bool|double|dynamic)\s+\w+\s*\(')
+        totalFunctions += RegExp(r'\b(void|Future|String|int|bool|double|Object?)\s+\w+\s*\(')
             .allMatches(content)
             .length;
       }

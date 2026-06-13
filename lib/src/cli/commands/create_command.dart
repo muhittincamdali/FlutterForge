@@ -403,7 +403,7 @@ class CreateCommand extends Command<int> with ForgeCommandMixin {
 const _dartReservedWords = {
   'abstract', 'as', 'assert', 'async', 'await', 'break', 'case', 'catch',
   'class', 'const', 'continue', 'covariant', 'default', 'deferred', 'do',
-  'dynamic', 'else', 'enum', 'export', 'extends', 'extension', 'external',
+  'Object?', 'else', 'enum', 'export', 'extends', 'extension', 'external',
   'factory', 'false', 'final', 'finally', 'for', 'function', 'get', 'hide',
   'if', 'implements', 'import', 'in', 'interface', 'is', 'late', 'library',
   'mixin', 'new', 'null', 'on', 'operator', 'part', 'required', 'rethrow',

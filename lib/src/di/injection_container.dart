@@ -24,8 +24,8 @@ class InjectionContainer {
   static final InjectionContainer instance = InjectionContainer();
 
   final Map<Type, _Registration> _registrations = {};
-  final Map<Type, dynamic> _singletonInstances = {};
-  final Map<Type, Future<dynamic>> _asyncSingletons = {};
+  final Map<Type, Object?> _singletonInstances = {};
+  final Map<Type, Future<Object?>> _asyncSingletons = {};
 
   /// Registers a singleton instance.
   void registerSingleton<T>(T instance) {
@@ -173,7 +173,7 @@ class InjectionContainer {
         .map((e) => e.key);
 
     for (final type in asyncTypes) {
-      await getAsync<dynamic>();
+      await getAsync<Object?>();
     }
   }
 }
@@ -195,8 +195,8 @@ class _Registration {
   });
 
   final _RegistrationType type;
-  final Factory<dynamic>? factory;
-  final AsyncFactory<dynamic>? asyncFactory;
+  final Factory<Object?>? factory;
+  final AsyncFactory<Object?>? asyncFactory;
   final Function? factoryWithParam;
 }
 
