@@ -6,6 +6,9 @@
 
 ---
 
+## 🚀 Killer Feature: Zero-Copy Swift FFI Bridge
+MethodChannels are slow. FlutterForge includes a native Dart FFI bridge (`SwiftBridge`) that binds directly to our high-performance Swift 6 engines (SwiftNetwork, SwiftAI), achieving true zero-copy performance for cross-platform apps.
+
 > **🛡️ PART OF THE 2026 UNIFIED CORE**
 > This repository is a verified component of 'The Endless March' initiative. Purified for Swift 6, zero-dependency, and engineered for maximum hardware saturation.
 > 
