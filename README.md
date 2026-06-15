@@ -6,6 +6,8 @@
 
 ---
 
+## 🚀 Killer Feature: Isolate Concurrency Engine
+Dart is single-threaded by default. FlutterForge includes a pre-configured `IsolateEngine` that automatically routes heavy JSON parsing and state computations to background threads, locking your app at a flawless 60fps/120fps.
 ## 🚀 Killer Feature: Zero-Copy Swift FFI Bridge
 MethodChannels are slow. FlutterForge includes a native Dart FFI bridge (`SwiftBridge`) that binds directly to our high-performance Swift 6 engines (SwiftNetwork, SwiftAI), achieving true zero-copy performance for cross-platform apps.
 
