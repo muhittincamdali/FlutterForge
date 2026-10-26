@@ -1,363 +1,305 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/Swift-6.0-FA7343?style=for-the-badge&logo=swift&logoColor=white" alt="Swift 6.0"/>
-  <img src="https://img.shields.io/badge/Platform-iOS%20|%20macOS%20|%20visionOS-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Platform"/>
-  <img src="https://img.shields.io/badge/Standard-Unified%20Core-5856D6?style=for-the-badge" alt="Standard"/>
-</p>
+<!-- brand:start -->
 
----
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/banner-light.svg" alt="FlutterForge: An HTTP client and an app generator for Flutter: retries, caching, tokens and a tested feature-first layout."></picture></p>
 
-## 🚀 Killer Feature: Isolate Concurrency Engine
-Dart is single-threaded by default. FlutterForge includes a pre-configured `IsolateEngine` that automatically routes heavy JSON parsing and state computations to background threads, locking your app at a flawless 60fps/120fps.
-## 🚀 Killer Feature: Zero-Copy Swift FFI Bridge
-MethodChannels are slow. FlutterForge includes a native Dart FFI bridge (`SwiftBridge`) that binds directly to our high-performance Swift 6 engines (SwiftNetwork, SwiftAI), achieving true zero-copy performance for cross-platform apps.
-
-> **🛡️ PART OF THE 2026 UNIFIED CORE**
-> This repository is a verified component of 'The Endless March' initiative. Purified for Swift 6, zero-dependency, and engineered for maximum hardware saturation.
-> 
-> *Flagship Engines:* [SwiftNetwork](https://github.com/muhittincamdali/SwiftNetwork) | [SwiftAI](https://github.com/muhittincamdali/SwiftAI) | [LiquidGlassKit](https://github.com/muhittincamdali/LiquidGlassKit)
-
----
-
-<h1 align="center">🔨 FlutterForge</h1>
+<!-- lang-selector:start -->
+<p align="center"><a href="README.md">English</a> · <a href="README.tr.md">Türkçe</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.ko.md">한국어</a> · <a href="README.es.md">Español</a> · <a href="README.de.md">Deutsch</a> · <a href="README.fr.md">Français</a> · <a href="README.pt-BR.md">Português (Brasil)</a> · <a href="README.ru.md">Русский</a></p>
+<!-- lang-selector:end -->
 
 <p align="center">
-  <strong>Stop wasting hours on boilerplate. Generate production-ready Flutter projects with clean architecture in seconds.</strong>
+<a href="https://github.com/muhittincamdali/FlutterForge/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/FlutterForge/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+<a href="https://github.com/muhittincamdali/FlutterForge/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/badge-version-light.svg" alt="Latest version: v1.0.0"></picture></a>
+<a href="https://github.com/muhittincamdali/FlutterForge/blob/main/pubspec.yaml"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/badge-language-light.svg" alt="Language version: Dart 3.12+"></picture></a>
+<a href="https://github.com/muhittincamdali/FlutterForge/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/badge-license-light.svg" alt="License: MIT"></picture></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/muhittincamdali/FlutterForge/actions/workflows/ci.yml">
-    <img src="https://github.com/muhittincamdali/FlutterForge/actions/workflows/ci.yml/badge.svg" alt="CI"/>
-  </a>
-  <a href="https://github.com/muhittincamdali/FlutterForge/releases">
-    <img src="https://img.shields.io/github/v/release/muhittincamdali/FlutterForge?style=flat-square&color=blue" alt="Release"/>
-  </a>
-  <img src="https://img.shields.io/badge/Flutter-3.24+-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter 3.24+"/>
-  <img src="https://img.shields.io/badge/Dart-3.5+-0175C2?style=flat-square&logo=dart&logoColor=white" alt="Dart 3.5+"/>
-  <img src="https://img.shields.io/badge/Platform-iOS%20%7C%20Android%20%7C%20Web%20%7C%20Desktop-lightgrey?style=flat-square" alt="Platform"/>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/github/license/muhittincamdali/FlutterForge?style=flat-square&color=green" alt="License"/>
-  </a>
+<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/button-start-en-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/button-start-en-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/button-start-en-light.svg" alt="Get started"></picture></a>
+<a href="https://muhittincamdali.github.io/FlutterForge/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/button-docs-en-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/button-docs-en-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/button-docs-en-light.svg" alt="Documentation"></picture></a>
+<a href="https://github.com/muhittincamdali/FlutterForge/tree/main/example"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/button-examples-en-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/button-examples-en-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/FlutterForge/main/.github/brand/button-examples-en-light.svg" alt="Examples"></picture></a>
 </p>
 
-<p align="center">
-  <a href="#why-flutterforge">Why FlutterForge?</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#quick-start">Quick Start</a> •
-  <a href="#features">Features</a> •
-  <a href="#documentation">Documentation</a> •
-  <a href="#contributing">Contributing</a>
-</p>
+<!-- brand:end -->
 
----
+FlutterForge is two tools for Flutter developers in one Dart package. `ForgeClient` is a
+JSON-over-HTTP client built on [`package:http`](https://pub.dev/packages/http) that retries,
+caches, refreshes bearer tokens, limits time and response size, and refuses unsafe redirects.
+`forge` is a command that creates a Flutter app — or adds a feature to one — with a
+feature-first layout, Riverpod, go_router, that client and tests for every layer, so a new
+project starts with code that already passes `flutter analyze` and `flutter test`. You can use
+the client without the command, and the generated app is plain Flutter code you can change.
 
-## Why FlutterForge?
+## Highlights
 
-Every Flutter project starts the same way — creating folders, configuring state management, setting up routing, writing DI boilerplate, adding networking layers. It takes **hours** before you write your first line of business logic.
+- **One error type to handle** — every failure is a sealed `ApiException`, so a `switch` over
+  it is checked by the compiler, and its `toString` names only the method and host, never the
+  path, query, headers or body.
+- **Retries that are safe to repeat** — idempotent requests are retried after connection errors,
+  timeouts and `408`/`429`/`5xx` with jittered backoff and `Retry-After`; `POST` and `PATCH`
+  are not, unless you ask.
+- **Offline-friendly cache** — `networkFirst` falls back to the last answer when the device is
+  offline; `cacheFirst` revalidates with `ETag` and `Last-Modified`. The memory cache is
+  bounded by entries and bytes.
+- **Tokens that stay where they belong** — the bearer token goes only to the API's origin,
+  concurrent `401` answers share one refresh, and redirects to another origin drop
+  `Authorization` and `Cookie` (outside the web, where the browser follows redirects).
+- **Bounded by default** — a 30 s limit per attempt, a 16 MiB response limit that also stops
+  endless bodies, cancellation that closes the connection, and header values that cannot inject
+  a new header line.
+- **A generator whose output is tested** — the [example app](example) is the exact output of
+  `forge create`; CI analyzes and tests it, and a test fails if it drifts from the templates.
 
-**FlutterForge eliminates that.** One command gives you a fully structured, production-grade Flutter project with all the best practices already in place.
+## Quick start
 
-```bash
-flutter_forge create my_app    # Full project in ~5 seconds
-flutter_forge generate feature auth   # Clean architecture feature module
+**1. Install the `forge` command**
+
+```sh
+dart pub global activate --source git https://github.com/muhittincamdali/FlutterForge.git --git-ref v2.0.0
 ```
 
-### How It Compares
+You need [Flutter](https://docs.flutter.dev/get-started/install) 3.44 or later, which includes
+Dart. If your terminal then says `forge: command not found`, add the folder Dart printed
+(`$HOME/.pub-cache/bin` on macOS and Linux, `%LOCALAPPDATA%\Pub\Cache\bin` on Windows) to your
+`PATH` and open a new terminal.
 
-| | FlutterForge | Manual Setup | Other CLIs |
-|---|:---:|:---:|:---:|
-| Clean Architecture out of the box | ✅ | ❌ | ⚠️ Partial |
-| Riverpod 2.0 + GoRouter pre-configured | ✅ | Manual | ❌ |
-| Feature/Model/Repository generators | ✅ | N/A | ⚠️ Limited |
-| Dio + Retrofit networking layer | ✅ | Manual | ❌ |
-| CI/CD pipeline templates | ✅ | Manual | ❌ |
-| Material 3 + Dark mode theming | ✅ | Manual | ❌ |
-| Comprehensive test scaffolding | ✅ | Manual | ⚠️ Basic |
-| Time to first feature | **~30 sec** | **2-4 hours** | **30-60 min** |
+**2. Create an app**
 
----
-
-## Features
-
-| Feature | Implementation | Description |
-|---------|---------------|-------------|
-| 🏗️ **Architecture** | Clean Architecture + Feature-first | Scalable, testable, maintainable |
-| 🔄 **State Management** | Riverpod 2.0 | Reactive, compile-safe providers |
-| 🧭 **Routing** | GoRouter | Type-safe, deep link ready |
-| 💉 **Dependency Injection** | Riverpod DI | No service locator needed |
-| 🌐 **Networking** | Dio + Retrofit | Code-generated API clients |
-| 💾 **Local Storage** | Hive + SharedPreferences | Fast key-value & structured storage |
-| 🎨 **Theming** | Material 3 | Light/dark mode with custom tokens |
-| 🌍 **Internationalization** | Easy Localization | Multi-language from day one |
-| 🧪 **Testing** | Unit + Widget + Integration | Full test pyramid support |
-| 🚀 **CI/CD** | GitHub Actions | Lint, test, build, deploy pipelines |
-| 📱 **Platforms** | iOS, Android, Web, Desktop | True cross-platform |
-
----
-
-## Requirements
-
-| Requirement | Version |
-|-------------|---------|
-| Flutter | 3.24+ |
-| Dart | 3.5+ |
-| iOS | 12.0+ |
-| Android | API 21+ (5.0 Lollipop) |
-
----
-
-## Installation
-
-### Global Activation (Recommended)
-
-```bash
-dart pub global activate flutter_forge
+```sh
+forge create my_app
 ```
 
-### As a Dev Dependency
+This runs `flutter create` for the Android and iOS folders, writes the app and its tests, and
+runs `flutter pub get`. Add `--org com.yourcompany` to set the app id, or
+`--platforms ios,android,web,macos` for more platforms.
 
-```yaml
-dev_dependencies:
-  flutter_forge: ^1.0.0
-```
+**3. Run it**
 
-Then run:
-
-```bash
-flutter pub get
-```
-
----
-
-## Quick Start
-
-### 1. Create a New Project
-
-```bash
-flutter_forge create my_awesome_app
-cd my_awesome_app
+```sh
+cd my_app
 flutter run
 ```
 
-### 2. Generate a Feature Module
+The app opens on a home page with a **Todos** entry; tap it to load a list from
+`jsonplaceholder.typicode.com`. Run `flutter test` to see the generated tests pass, and
+`forge feature orders` to add a second screen with its own tests.
 
-```bash
-flutter_forge generate feature profile
+## Installation
+
+To use only the HTTP client in an existing Flutter or Dart project, add the package to
+`pubspec.yaml`:
+
+```yaml
+dependencies:
+  flutter_forge:
+    git:
+      url: https://github.com/muhittincamdali/FlutterForge.git
+      ref: v2.0.0
 ```
 
-This generates a complete clean architecture module:
+Then run `flutter pub get` (or `dart pub get`) and import it:
 
-```
-lib/features/profile/
-├── data/
-│   ├── datasources/       # Remote & local data sources
-│   ├── models/            # DTOs with JSON serialization
-│   └── repositories/      # Repository implementations
-├── domain/
-│   ├── entities/          # Business entities
-│   ├── repositories/      # Repository contracts
-│   └── usecases/          # Business logic
-└── presentation/
-    ├── providers/         # Riverpod providers
-    ├── screens/           # Page widgets
-    └── widgets/           # Feature-specific widgets
+```dart
+import 'package:flutter_forge/flutter_forge.dart';
 ```
 
-### 3. Generate Individual Components
+The package depends only on `http`, `http_parser`, `args` and `path`, and runs on Android, iOS,
+macOS, Windows, Linux, the web and the Dart VM. It is installed from Git because the name
+`flutter_forge` on pub.dev belongs to another, discontinued package.
 
-```bash
-flutter_forge generate model User          # Freezed model + JSON
-flutter_forge generate repository UserRepo # Interface + implementation
-flutter_forge generate usecase GetProfile  # Use case with repository DI
-flutter_forge generate screen Settings     # Screen + provider wiring
+Version 2.0.0 is a rewrite: the 1.0.0 sources did not compile, and none of their API exists any
+more. [CHANGELOG.md](CHANGELOG.md) has the details.
+
+## Usage
+
+Every sample below is also in [test/readme_test.dart](test/readme_test.dart), which runs it
+against a fake server.
+
+### Call an API
+
+```dart
+final class Todo {
+  const Todo({required this.id, required this.title});
+
+  final int id;
+  final String title;
+
+  static Todo fromJson(Object? json) => switch (json) {
+    {'id': final int id, 'title': final String title} => Todo(id: id, title: title),
+    _ => throw const FormatException('Not a todo'),
+  };
+
+  static List<Todo> listFromJson(Object? json) => [for (final item in json! as List<Object?>) fromJson(item)];
+}
+
+final client = ForgeClient(baseUrl: 'https://jsonplaceholder.typicode.com');
+final todo = await client.getJson('/todos/1', decode: Todo.fromJson);
+print(todo.title); // delectus aut autem
+
+final created = await client.postJson('/todos', json: {'title': 'Ship it'}, decode: (json) => json);
 ```
 
----
+Relative paths are appended to the base URL. Anything `decode` throws becomes a
+`DecodingException`.
+
+### Handle failures
+
+```dart
+String messageFor(Object error) => switch (error) {
+  ConnectionException() => 'You appear to be offline.',
+  RequestTimeoutException() => 'The server took too long to answer.',
+  HttpStatusException(statusCode: 404) => 'Not found.',
+  HttpStatusException(:final statusCode) => 'The server answered $statusCode.',
+  ApiException() => 'Something went wrong.',
+  _ => 'Unexpected error: $error',
+};
+
+try {
+  await client.getJson('/todos/999', decode: Todo.fromJson);
+} on ApiException catch (error) {
+  print(messageFor(error)); // Not found.
+}
+```
+
+`HttpStatusException.response` keeps the body the server sent with the error.
+
+### Keep the last answer for offline use
+
+```dart
+final cache = MemoryResponseCache(maxEntries: 200, maxBytes: 4 * 1024 * 1024);
+final client = ForgeClient(baseUrl: 'https://api.example.com', cache: cache);
+
+final todos = await client.getJson(
+  '/todos',
+  decode: Todo.listFromJson,
+  cachePolicy: CachePolicy.networkFirst, // the network, or the last answer when offline
+);
+```
+
+Use `CachePolicy.cacheFirst` to skip the request while the stored answer is fresh, and call
+`cache.clear()` when the signed-in user changes.
+
+### Send a bearer token
+
+```dart
+final client = ForgeClient(
+  baseUrl: 'https://api.example.com',
+  auth: BearerAuth(
+    readToken: () => tokenStore.accessToken,
+    refreshToken: tokenStore.refresh, // called once on 401, shared by parallel requests
+  ),
+);
+```
+
+`refresh` stores the new token and returns it, or returns `null` when the user has to sign in
+again.
+
+### Test without a server
+
+```dart
+final client = ForgeClient(
+  baseUrl: 'https://api.example.com',
+  retry: RetryPolicy.none,
+  httpClient: MockClient((request) async {
+    expect(request.url.path, '/todos');
+    return http.Response(jsonEncode([
+      {'id': 1, 'title': 'Test'},
+    ]), 200);
+  }),
+);
+
+expect(await client.getJson('/todos', decode: Todo.listFromJson), hasLength(1));
+```
+
+`MockClient` comes from `package:http/testing.dart`.
+
+### Add a feature to a generated app
+
+```sh
+forge feature orders                                   # Order, GET /orders
+forge feature order_items --api-path /v2/order-items   # OrderItem
+forge feature news --entity Article                    # when the singular is not obvious
+```
+
+Each command writes `lib/features/<name>/{domain,data,presentation}` and two test files, adds
+the route to `lib/app/router.dart`, adds the screen to the home page, and formats what it
+changed. Names that would not compile, such as a feature whose entity would be called `Text`,
+are refused before anything is written.
+
+## Screenshots
+
+The example app on an iPhone 18 Pro simulator (iOS 27), with live data from
+`jsonplaceholder.typicode.com`:
+
+| Home | Todos | Todos, dark | Offline |
+| --- | --- | --- | --- |
+| ![Home page listing the Todos screen](docs/screenshots/home.png) | ![Todo list loaded from the API](docs/screenshots/todos.png) | ![Todo list in dark appearance](docs/screenshots/todos-dark.png) | ![Offline message with a Try again button](docs/screenshots/offline.png) |
+
+[`scripts/screenshots.sh`](scripts/screenshots.sh) builds the example and takes these
+screenshots. To run the example yourself:
+
+```sh
+cd example
+flutter run
+```
 
 ## Documentation
 
-### Project Structure
+- [API reference and guides](https://muhittincamdali.github.io/FlutterForge/) — built with
+  `dart doc` and published to GitHub Pages from `main`.
+- Build it locally with `dart doc --output build/doc` and open `build/doc/index.html`.
+- `forge --help`, `forge create --help` and `forge feature --help` list every option.
 
-```
-lib/
-├── app/
-│   ├── app.dart              # App widget with MaterialApp
-│   └── router.dart           # GoRouter configuration
-├── core/
-│   ├── network/              # Dio client, interceptors, error handling
-│   ├── storage/              # Hive boxes, SharedPreferences wrapper
-│   ├── theme/                # ThemeData, color schemes, typography
-│   └── utils/                # Extensions, helpers, constants
-├── features/
-│   ├── auth/                 # Authentication feature
-│   │   ├── data/
-│   │   ├── domain/
-│   │   └── presentation/
-│   └── home/                 # Home feature
-├── shared/
-│   ├── widgets/              # Cross-feature reusable widgets
-│   └── extensions/           # Dart extensions
-└── main.dart                 # Entry point with ProviderScope
-```
+## Guides
 
-### State Management
+- [Calling an API with ForgeClient](doc/guides/calling-an-api.md) — typed requests, errors,
+  retries, caching, tokens, cancellation, interceptors and tests.
+- [Building an app with forge](doc/guides/building-an-app.md) — create an app, read its layout,
+  add a feature, point it at your API and add a field.
+- [What the client guards against](doc/guides/security-model.md) — redirects, header injection,
+  memory limits, hostile numbers, and what is left to you.
 
-Riverpod 2.0 with code generation:
+## Requirements
 
-```dart
-// Define a provider
-final userProvider = FutureProvider<User>((ref) async {
-  final repository = ref.read(userRepositoryProvider);
-  return repository.getCurrentUser();
-});
+| Toolchain | Minimum version |
+| --- | --- |
+| Dart (library and `forge`) | 3.12 |
+| Flutter (generated apps) | 3.44 |
 
-// Consume in a widget
-class ProfileScreen extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userAsync = ref.watch(userProvider);
-    
-    return userAsync.when(
-      data: (user) => UserProfile(user: user),
-      loading: () => const LoadingIndicator(),
-      error: (e, _) => ErrorWidget(message: e.toString()),
-    );
-  }
-}
+Generated apps use Riverpod 3.4, go_router 18.1 and `http` 1.6. The package is developed and
+tested with Flutter 3.47 and Dart 3.13; CI uses the latest stable Flutter release.
+
+## Architecture
+
+- `lib/src/network/` — `ForgeClient` builds a chain of interceptors around a transport: your
+  interceptors, then `CacheInterceptor`, `RetryInterceptor` and `BearerAuthInterceptor`. The
+  transport sends one request through `package:http` with redirects turned off, follows
+  redirects itself, enforces the time limit with `Abortable` requests and reads the body with
+  a byte limit. Requests and responses are immutable values.
+- `lib/src/cli/` — `forge` is a `CommandRunner` from `package:args`. Templates are Dart string
+  constants rendered by a strict `{{key}}` replacer that fails on a missing value; names are
+  validated before any file is touched, and files are written only inside the project.
+- `example/` — the output of `forge create`, depending on this checkout with `path: ..`.
+- `test/` — unit tests for the client (with a fake `http.Client` that supports aborting and
+  streamed bodies), the CLI (with a fake process runner in a temporary folder), the README
+  samples, and a test that regenerates the example and compares it file by file.
+
+Run the checks locally:
+
+```sh
+dart analyze && dart test
+cd example && flutter analyze && flutter test
 ```
 
-### Networking
+## Roadmap
 
-Type-safe API client powered by Retrofit:
-
-```dart
-@RestApi()
-abstract class ApiClient {
-  factory ApiClient(Dio dio) = _ApiClient;
-  
-  @GET('/users/{id}')
-  Future<UserDto> getUser(@Path() String id);
-  
-  @POST('/auth/login')
-  Future<AuthResponse> login(@Body() LoginRequest request);
-  
-  @PUT('/users/{id}')
-  Future<UserDto> updateUser(
-    @Path() String id,
-    @Body() UpdateUserRequest request,
-  );
-}
-```
-
-### Theming
-
-Material 3 with automatic light/dark switching:
-
-```dart
-final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
-  return ThemeNotifier();
-});
-
-MaterialApp(
-  themeMode: ref.watch(themeProvider),
-  theme: AppTheme.light,
-  darkTheme: AppTheme.dark,
-)
-```
-
-### Testing
-
-```bash
-flutter test                        # All tests
-flutter test --coverage             # With coverage report
-flutter test integration_test/      # Integration tests
-```
-
-Example test:
-
-```dart
-void main() {
-  group('UserRepository', () {
-    late MockApiClient mockApiClient;
-    late UserRepository repository;
-
-    setUp(() {
-      mockApiClient = MockApiClient();
-      repository = UserRepositoryImpl(mockApiClient);
-    });
-
-    test('getUser returns user from API', () async {
-      when(mockApiClient.getUser('1'))
-          .thenAnswer((_) async => UserDto(id: '1', name: 'John'));
-
-      final user = await repository.getUser('1');
-
-      expect(user.name, 'John');
-    });
-  });
-}
-```
-
----
-
-## CLI Commands
-
-| Command | Description |
-|---------|-------------|
-| `create <name>` | Scaffold a new Flutter project |
-| `generate feature <name>` | Generate a clean architecture feature module |
-| `generate model <name>` | Generate a Freezed model with JSON serialization |
-| `generate repository <name>` | Generate a repository (interface + impl) |
-| `generate usecase <name>` | Generate a use case class |
-| `generate screen <name>` | Generate a screen with provider |
-| `generate widget <name>` | Generate a reusable widget |
-
----
-
-## CI/CD
-
-Pre-configured GitHub Actions workflows:
-
-| Workflow | Trigger | What It Does |
-|----------|---------|--------------|
-| **Lint** | Every PR | Runs `flutter analyze` |
-| **Test** | Every PR | Runs full test suite with coverage |
-| **Build** | Push to `main` | Builds release artifacts |
-| **Deploy** | Tag `v*` | Optional store deployment |
-
----
+- Upload and download progress for large bodies.
+- A persistent `ResponseCache` (files or SQLite) next to `MemoryResponseCache`.
+- More `forge` templates: localization, flavors and a generated CI workflow for the new app.
 
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-See the [open issues](https://github.com/muhittincamdali/FlutterForge/issues) for a list of proposed features and known issues.
-
----
+Contributions are welcome. Read the [contributing guide](https://github.com/muhittincamdali/FlutterForge/blob/main/CONTRIBUTING.md) and the [code of conduct](https://github.com/muhittincamdali/.github/blob/main/CODE_OF_CONDUCT.md) before opening a pull request. Report security issues privately as described in the [security policy](https://github.com/muhittincamdali/.github/blob/main/SECURITY.md).
 
 ## License
 
-FlutterForge is released under the MIT License. See [LICENSE](LICENSE) for details.
-
----
-
-## 📈 Star History
-
-<a href="https://star-history.com/#muhittincamdali/FlutterForge&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=muhittincamdali/FlutterForge&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=muhittincamdali/FlutterForge&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=muhittincamdali/FlutterForge&type=Date" />
- </picture>
-</a>
-
----
-
-<p align="center">
-  Made with ❤️ by <a href="https://github.com/muhittincamdali">Muhittin Camdali</a>
-</p>
+Released under the MIT license. See [LICENSE](LICENSE).
