@@ -38,10 +38,16 @@ request for `/admin` (with the user's token) by a `name` of `../../admin`.
 The check reads segments the way servers may read them: it splits at `/`,
 `\` (which `Uri.parse` turns into `/`), `%2f` and `%5c`, treats `%2e` as `.`,
 and ignores a `;` parameter, so `..\admin`, `..%2fadmin` and the Tomcat-style
-`..;/admin` are refused too. It also reads `%25` as `%` first, for servers
+`..;/admin` are refused too. It also splits at the IIS forms `%u002f` and
+`%u005c`, at the overlong UTF-8 forms of `/` and `\` that lenient decoders
+accept (`..%c0%afadmin`, `..%e0%80%afadmin`), at the full-width `／` and `＼`,
+which Unicode normalisation turns into `/` and `\`, and at the division slash
+`∕` (`%u2215`) and the set minus `∖`, which Windows best-fit mapping turns into
+them. It reads `%25` as `%` first, for servers
 that decode a path twice (`%252e%252e/admin`), treats the full-width and small
 dots (`．．/admin`), the IIS form `%u002e` and the overlong UTF-8 form
-`%c0%ae` as `.`, and drops NUL and the other control characters, which C code
+`%c0%ae` as `.`, and the two-dot leader and the ellipsis (`‥/admin`,
+`…/admin`), which normalisation turns into `..` and `...`, as dots, and drops NUL and the other control characters, which C code
 stops at and servers strip or split at (`..%00/admin`, `..%0a/admin`), and
 spaces including the no-break space, which IIS trims (`.. /admin`,
 `..%c2%a0/admin`). A segment made only of

@@ -135,6 +135,48 @@ void main() {
       expect(client.resolve('/files/caf%C3%A9').path, '/v1/files/caf%C3%A9');
     });
 
+    test('refuses dot segments split at a slash that a server decodes or maps to / or \\', () {
+      for (final path in [
+        '..%c0%afadmin',
+        '/..%C0%AFadmin',
+        '..%e0%80%afadmin',
+        '/..%c1%9cadmin',
+        '/..%E0%81%9Cadmin',
+        '..%u002fadmin',
+        '..%25u002fadmin',
+        '/..%U005Cadmin',
+        '..%u2215admin',
+        '/..∕admin',
+        '/..%e2%88%95admin',
+        '/..∖admin',
+        '/..%e2%88%96admin',
+        '..／admin',
+        '..＼admin',
+        '/..%ef%bc%8fadmin',
+        '/..%EF%BC%BCadmin',
+        '/..%uff0fadmin',
+      ]) {
+        expect(() => client.resolve(path), throwsArgumentError, reason: path);
+      }
+      expect(client.resolve('/files/1／2').path, '/v1/files/1%EF%BC%8F2');
+      expect(client.resolve('/files/a%c0%afb').path, '/v1/files/a%C0%AFb');
+    });
+
+    test('refuses a two-dot leader or an ellipsis, which normalisation turns into dots', () {
+      for (final path in [
+        '‥/admin',
+        '/files/‥',
+        '/%e2%80%a5/admin',
+        '/%u2025/admin',
+        '/…/admin',
+        '/%E2%80%A6/admin',
+        '/.‥/admin',
+      ]) {
+        expect(() => client.resolve(path), throwsArgumentError, reason: path);
+      }
+      expect(client.resolve('/files/‥notes').path, '/v1/files/%E2%80%A5notes');
+    });
+
     test('refuses a path that becomes a dot segment when Uri.parse rewrites its escapes', () {
       // Uri.parse decodes `%32` and `%65` and encodes a `%` that starts no
       // escape, so each of these would be sent with `%252e` or `%252f`.

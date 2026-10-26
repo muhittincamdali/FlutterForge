@@ -125,9 +125,12 @@ final class ForgeClient {
   /// `'/files/$name'` with `name = '../admin'` cannot leave the base path;
   /// such a path throws an [ArgumentError]. Segments are read the way a
   /// server may read them: `%25` is decoded first (`%252e` counts as `.`),
-  /// segments are split at `/`, `\`, `%2f` and `%5c`, a `;` parameter is
+  /// segments are split at `/`, `\`, `%2f` and `%5c`, at their `%u` and
+  /// overlong UTF-8 forms (`%u002f`, `%c0%af`, `%e0%80%af`) and at the
+  /// full-width `／` and `＼` and the division slash `∕`, a `;` parameter is
   /// ignored (`..;x` counts as `..`), `%2e` and the full-width and small dots
-  /// count as `.`, as do `%u002e` and the overlong `%c0%ae`, and control
+  /// count as `.`, as do `%u002e` and the overlong `%c0%ae`, the two-dot
+  /// leader `‥` and the ellipsis `…` count as dots, and control
   /// characters and spaces, also the no-break space, are dropped, so
   /// `..%00`, `..%0a`, `.. `, `..%c2%a0` and `．．` count as `..`. A segment
   /// made only of dots, such as `...`, is refused too. The check runs on the path as given and again on
@@ -540,8 +543,17 @@ final class ForgeClient {
 }
 
 // What a server may read as a path separator: `/`, `\` (Uri.parse turns it
-// into `/`), and both of them percent-encoded.
-final RegExp _segmentSeparator = RegExp(r'[/\\]|%2f|%5c', caseSensitive: false);
+// into `/`), both of them percent-encoded, the IIS forms `%u002f` and
+// `%u005c`, the overlong UTF-8 forms that lenient decoders accept (`%c0%af`,
+// `%e0%80%af`, `%c1%9c`, `%e0%81%9c`), the full-width solidus and reverse
+// solidus, which Unicode normalisation turns into `/` and `\`, and the
+// division slash and set minus, which Windows best-fit mapping turns into
+// them. The last four raw, as `%u` forms or percent-encoded as UTF-8.
+final RegExp _segmentSeparator = RegExp(
+  r'[/\\\u2215\u2216\uFF0F\uFF3C]|%2f|%5c|%u(?:002f|005c|2215|2216|ff0f|ff3c)|%c0%af|%e0%80%af|%c1%9c|%e0%81%9c'
+  r'|%e2%88%95|%e2%88%96|%ef%bc%8f|%ef%bc%bc',
+  caseSensitive: false,
+);
 
 // Servers such as Tomcat read `..;x` as `..` with a parameter.
 final RegExp _segmentParameters = RegExp(';|%3b', caseSensitive: false);
@@ -555,10 +567,13 @@ bool _hasDotSegment(String path) => path.replaceAll(_encodedPercent, '%').split(
 
 // What a server may read as `.`: `%2e`, the IIS form `%u002e`, the overlong
 // UTF-8 forms `%c0%ae` and `%e0%80%ae` that lenient decoders accept, and the
-// full-width, small and one-dot-leader dots that Unicode normalisation turns
-// into `.`, raw or percent-encoded as UTF-8.
+// full-width, small and one-dot-leader dots, the two-dot leader and the
+// ellipsis, which Unicode normalisation turns into `.`, `..` and `...`; raw,
+// as `%u` forms or percent-encoded as UTF-8. Each becomes one `.`, which is
+// enough: a segment made only of dots is refused whatever their number.
 final RegExp _dotLike = RegExp(
-  r'%2e|%u002e|%c0%ae|%e0%80%ae|\uFF0E|\uFE52|\u2024|%ef%bc%8e|%ef%b9%92|%e2%80%a4',
+  r'%2e|%u(?:002e|ff0e|fe52|2024|2025|2026)|%c0%ae|%e0%80%ae|[\uFF0E\uFE52\u2024\u2025\u2026]'
+  r'|%ef%bc%8e|%ef%b9%92|%e2%80%a[4-6]',
   caseSensitive: false,
 );
 
