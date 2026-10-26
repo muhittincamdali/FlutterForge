@@ -14,7 +14,7 @@
 /// use this client; see the "Building an app with forge" guide.
 ///
 /// {@category calling-an-api}
-/// {@category building-an-app}
+/// {@category creating-an-app}
 /// {@category security-model}
 library;
 

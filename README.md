@@ -253,7 +253,7 @@ flutter run
 
 - [Calling an API with ForgeClient](doc/guides/calling-an-api.md) — typed requests, errors,
   retries, caching, tokens, cancellation, interceptors and tests.
-- [Building an app with forge](doc/guides/building-an-app.md) — create an app, read its layout,
+- [Building an app with forge](doc/guides/creating-an-app.md) — create an app, read its layout,
   add a feature, point it at your API and add a field.
 - [What the client guards against](doc/guides/security-model.md) — redirects, header injection,
   memory limits, hostile numbers, and what is left to you.

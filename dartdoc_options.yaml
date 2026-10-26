@@ -3,15 +3,15 @@ dartdoc:
     calling-an-api:
       displayName: Calling an API
       markdown: doc/guides/calling-an-api.md
-    building-an-app:
+    creating-an-app:
       displayName: Building an app with forge
-      markdown: doc/guides/building-an-app.md
+      markdown: doc/guides/creating-an-app.md
     security-model:
       displayName: Security model
       markdown: doc/guides/security-model.md
   categoryOrder:
     - calling-an-api
-    - building-an-app
+    - creating-an-app
     - security-model
   errors:
     - unresolved-doc-reference
