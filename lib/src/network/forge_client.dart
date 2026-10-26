@@ -48,6 +48,10 @@ final class ForgeClient {
   /// appended to its path, so `/todos` on `https://api.example.com/v1` is
   /// `https://api.example.com/v1/todos`.
   ///
+  /// [headers] are sent with every request, also to an absolute URL on
+  /// another origin; only the token of [auth] is limited to the origin of
+  /// [baseUrl]. Do not put a key here that other origins must not see.
+  ///
   /// [timeout] limits each attempt, from sending the request to reading the
   /// last byte of the body. [maxResponseBytes] limits the body; a longer body
   /// throws [ResponseTooLargeException] without being read further.

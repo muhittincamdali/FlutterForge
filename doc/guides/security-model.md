@@ -10,6 +10,11 @@ about the web describes browser behaviour.
 - `BearerAuth` adds the token only to requests whose scheme, host and port
   match the base URL. An absolute URL to a CDN, another port or plain `http`
   on the same host goes out without it.
+- The default `headers` given to `ForgeClient` are not bound to an origin:
+  they go with every request, also to an absolute URL on another host. Keep
+  an API key such as `x-api-key` out of them when the client also calls other
+  origins, and add it per request or in an `Interceptor` that checks
+  `request.uri` first.
 - The client follows redirects itself (`maxRedirects`, 5 by default). When a
   redirect leaves the origin, `Authorization`, `Cookie` and
   `Proxy-Authorization` are removed, and a request body (a `307`/`308`
