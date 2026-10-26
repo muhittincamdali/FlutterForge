@@ -113,12 +113,26 @@ void main() {
         '/﹒﹒/admin',
         '... /admin',
         '/.../admin',
+        '/..%0a/admin',
+        '/..%0D/admin',
+        '/..%0b/admin',
+        '/..%1f/admin',
+        '/..%7f/admin',
+        '/..\n/admin',
+        '/..%c2%a0/admin',
+        '/.. /admin',
+        '/%c0%ae%c0%ae/admin',
+        '/%C0%AE./admin',
+        '/%e0%80%ae%e0%80%ae/admin',
+        '/%u002e%u002e/admin',
       ]) {
         expect(() => client.resolve(path), throwsArgumentError, reason: path);
       }
       expect(client.resolve('/files/100%25').path, '/v1/files/100%25');
       expect(client.resolve('/files/a%20b').path, '/v1/files/a%20b');
       expect(client.resolve('/files/..%20notes').path, '/v1/files/..%20notes');
+      expect(client.resolve('/files/a%0Ab').path, '/v1/files/a%0Ab');
+      expect(client.resolve('/files/caf%C3%A9').path, '/v1/files/caf%C3%A9');
     });
 
     test('refuses a path that becomes a dot segment when Uri.parse rewrites its escapes', () {

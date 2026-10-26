@@ -40,8 +40,11 @@ The check reads segments the way servers may read them: it splits at `/`,
 and ignores a `;` parameter, so `..\admin`, `..%2fadmin` and the Tomcat-style
 `..;/admin` are refused too. It also reads `%25` as `%` first, for servers
 that decode a path twice (`%252e%252e/admin`), treats the full-width and small
-dots (`．．/admin`) as `.`, and drops NUL characters and spaces, which C code
-stops at and IIS trims (`..%00/admin`, `.. /admin`). A segment made only of
+dots (`．．/admin`), the IIS form `%u002e` and the overlong UTF-8 form
+`%c0%ae` as `.`, and drops NUL and the other control characters, which C code
+stops at and servers strip or split at (`..%00/admin`, `..%0a/admin`), and
+spaces including the no-break space, which IIS trims (`.. /admin`,
+`..%c2%a0/admin`). A segment made only of
 dots, such as `...`, is refused as well. The same check runs a second time on
 the path that is sent: `Uri.parse` decodes escapes of letters and digits and
 encodes a `%` that starts no escape, so `%25%32%65` and `%2%65` both leave as

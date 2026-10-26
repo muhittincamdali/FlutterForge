@@ -47,8 +47,9 @@ problem and is no longer developed.
 - Header names and methods must be HTTP tokens and header values cannot contain CR, LF or NUL.
 - Relative paths with `.` or `..` segments are refused, so user input in a path cannot leave
   the base URL. Segments are split at `/`, `\`, `%2f` and `%5c`, `%2e` and the full-width and
-  small dots count as `.`, a `;` parameter is ignored, `%25` is read as `%` and NUL characters
-  and spaces are dropped before the check. The check runs on the path as given and on the
+  small dots, `%u002e` and the overlong `%c0%ae` count as `.`, a `;` parameter is ignored,
+  `%25` is read as `%`, and control characters and spaces, also the no-break space, are dropped
+  before the check. The check runs on the path as given and on the
   path that `Uri.parse` produces, so escapes that it rewrites (`%25%32%65`, `%2%65`) cannot
   turn into `%252e` after the check.
 - Redirects are followed by the client: `https` to `http`, other schemes and URLs with user

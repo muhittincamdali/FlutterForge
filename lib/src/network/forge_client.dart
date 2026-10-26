@@ -127,9 +127,10 @@ final class ForgeClient {
   /// server may read them: `%25` is decoded first (`%252e` counts as `.`),
   /// segments are split at `/`, `\`, `%2f` and `%5c`, a `;` parameter is
   /// ignored (`..;x` counts as `..`), `%2e` and the full-width and small dots
-  /// count as `.`, and NUL characters and spaces are dropped, so `..%00`,
-  /// `.. ` and `．．` count as `..`. A segment made only of dots, such as
-  /// `...`, is refused too. The check runs on the path as given and again on
+  /// count as `.`, as do `%u002e` and the overlong `%c0%ae`, and control
+  /// characters and spaces, also the no-break space, are dropped, so
+  /// `..%00`, `..%0a`, `.. `, `..%c2%a0` and `．．` count as `..`. A segment
+  /// made only of dots, such as `...`, is refused too. The check runs on the path as given and again on
   /// the path that is sent, after `Uri.parse` has decoded escapes such as
   /// `%32` and encoded a stray `%`, so `%25%32%65` and `%2%65`, which are sent
   /// as `%252e`, count as `.` as well. A fragment is dropped.
@@ -552,14 +553,20 @@ final RegExp _encodedPercent = RegExp('%(?:25)+', caseSensitive: false);
 
 bool _hasDotSegment(String path) => path.replaceAll(_encodedPercent, '%').split(_segmentSeparator).any(_isDotSegment);
 
-// What a server may read as `.`: `%2e`, and the full-width, small and
-// one-dot-leader dots that Unicode normalisation turns into `.`, raw or
-// percent-encoded as UTF-8.
-final RegExp _dotLike = RegExp(r'%2e|\uFF0E|\uFE52|\u2024|%ef%bc%8e|%ef%b9%92|%e2%80%a4', caseSensitive: false);
+// What a server may read as `.`: `%2e`, the IIS form `%u002e`, the overlong
+// UTF-8 forms `%c0%ae` and `%e0%80%ae` that lenient decoders accept, and the
+// full-width, small and one-dot-leader dots that Unicode normalisation turns
+// into `.`, raw or percent-encoded as UTF-8.
+final RegExp _dotLike = RegExp(
+  r'%2e|%u002e|%c0%ae|%e0%80%ae|\uFF0E|\uFE52|\u2024|%ef%bc%8e|%ef%b9%92|%e2%80%a4',
+  caseSensitive: false,
+);
 
-// What a server may drop from a segment: NUL, which ends a C string, and
-// spaces and tabs, which IIS and Windows trim from the end of a name.
-final RegExp _droppedByServers = RegExp(r'%00|%09|%20|[\s\x00]', caseSensitive: false);
+// What a server may drop from a segment: NUL, which ends a C string, the other
+// control characters (line breaks, tabs, DEL), which servers and proxies strip
+// or split at, and spaces including the no-break space, which IIS and Windows
+// trim from the end of a name. Raw or percent-encoded.
+final RegExp _droppedByServers = RegExp(r'%[01][0-9a-f]|%7f|%20|%c2%a0|[\s\x00-\x1f\x7f]', caseSensitive: false);
 
 final RegExp _onlyDots = RegExp(r'^\.+$');
 
