@@ -57,7 +57,7 @@ the client without the command, and the generated app is plain Flutter code you 
 dart pub global activate --source git https://github.com/muhittincamdali/FlutterForge.git --git-ref v2.0.0
 ```
 
-You need [Flutter](https://docs.flutter.dev/get-started/install) 3.44 or later, which includes
+You need [Flutter](https://docs.flutter.dev/install) 3.44 or later, which includes
 Dart. If your terminal then says `forge: command not found`, add the folder Dart printed
 (`$HOME/.pub-cache/bin` on macOS and Linux, `%LOCALAPPDATA%\Pub\Cache\bin` on Windows) to your
 `PATH` and open a new terminal.
