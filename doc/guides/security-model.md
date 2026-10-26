@@ -101,7 +101,20 @@ exception object for code that needs them.
 - A URL with user information (`https://user:password@host`) is refused by
   `ForgeRequest` and `resolve`, and the error does not repeat it.
 - The host is printed only when it is a plain DNS name, an IPv4 address or an
-  IPv6 address without a zone, and nothing in it looks like a secret:
+  IPv6 address without a zone, nothing in it names a secret, and nothing in
+  it looks like one.
+
+  A host can carry a secret right next to its name, as in
+  `pin-4831.example.com`, `token-abc123.example.com` or
+  `password.hunter2.example`, so a host is printed as `[R]` when a label
+  holds `password`, `token`, `secret`, `apikey`, `cookie`, `signature` or
+  another long secret name anywhere, also across a `-` (`db-password`), or
+  when one of its words, split at `-` and between letters and digits, is a
+  short name such as `pin`, `key`, `pass`, `auth`, `card`, `otp`, `cvv` or
+  `session`. That also hides ordinary hosts such as `auth.example.com`. A
+  short name inside a longer word (`spin`, `monkey`) names nothing.
+
+  A host looks like a secret when it holds:
   - a card number: 13 or more digits, also when grouped with `-` as in
     `4111-1111-1111-1111`;
   - an IBAN: two letters, two check digits and 11 to 30 letters and digits

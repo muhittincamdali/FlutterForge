@@ -108,7 +108,7 @@ void main() {
       expect(described('https://4111--1111---1111-1111.example.com'), 'GET https://[R]');
       expect(described('https://k9x2m4p7q1w8e3r6t5y0u2i4o6p8a1s3d5.example.com/a'), 'GET https://[R]');
       expect(described('https://eyjhbgcioijiuzi1niisinr5cci6ikpxvcj9.example.com'), 'GET https://[R]');
-      expect(described('https://pin-4831.example.com/a'), 'GET https://pin-4831.example.com');
+      expect(described('https://shop-4831.example.com/a'), 'GET https://shop-4831.example.com');
       expect(described('https://4111-1111-1111.example.com'), 'GET https://4111-1111-1111.example.com');
       expect(described('https://${'q' * 40}.example.com'), 'GET https://${'q' * 40}.example.com');
       expect(described('https://xn--caf-dma.example'), 'GET https://xn--caf-dma.example');
@@ -129,6 +129,28 @@ void main() {
       expect(described('https://$name'), 'GET https://$name');
       expect(described('https://GB82WEST12345698765433.example.com'), 'GET https://gb82west12345698765433.example.com');
       expect(described('https://eyjafjallajokull.is'), 'GET https://eyjafjallajokull.is');
+    });
+
+    test('describe writes a host that names a secret as [R]', () {
+      String described(String url) => ForgeRequest(method: 'GET', uri: Uri.parse(url)).describe();
+      for (final url in [
+        'https://pin-4831.example.com/a',
+        'https://token-abc123.example.com',
+        'https://password.hunter2.example',
+        'https://db-password.example.com',
+        'https://myapitoken.example.com',
+        'https://api-key.example.com',
+        'https://pin4831.example.com',
+        'https://session.example.com',
+        'https://auth.example.com',
+        'https://Client-Secret.example.com',
+      ]) {
+        expect(described(url), 'GET https://[R]', reason: url);
+      }
+      // A short name inside a longer word names nothing.
+      for (final host in ['spin.example.com', 'monkey.example.net', 'cards2go.example', 'passage.example']) {
+        expect(described('https://$host/a'), 'GET https://$host', reason: host);
+      }
     });
 
     test('refuses a URL with user information without repeating it', () {

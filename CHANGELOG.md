@@ -62,8 +62,9 @@ problem and is no longer developed.
   backoff are all bounded, so a hostile or broken server cannot exhaust memory or produce an
   overflowing delay.
 - Exception messages name only the method, scheme, host and port; a host that is not a plain
-  name or address, or that holds a card number, an IBAN, a key (also a base64url token with
-  `-`) or a JSON Web Token, is written as `[R]`.
+  name or address, that names a secret (`pin-4831.example.com`, `token-abc123.example.com`,
+  also an ordinary `auth.example.com`), or that holds a card number, an IBAN, a key (also a
+  base64url token with `-`) or a JSON Web Token, is written as `[R]`.
   URLs with user information are refused.
 - `forge` validates every name, organisation, description and path before it runs a program
   or writes a file, and writes only inside the project folder.

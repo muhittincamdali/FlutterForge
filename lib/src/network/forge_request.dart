@@ -114,7 +114,20 @@ final class ForgeRequest {
   /// left out because they can carry identifiers or tokens.
   ///
   /// The host is written only when it is a plain DNS name, an IPv4 address or
-  /// an IPv6 address without a zone, and nothing in it looks like a secret:
+  /// an IPv6 address without a zone, nothing in it names a secret, and
+  /// nothing in it looks like one.
+  ///
+  /// A label names a secret when it holds `password`, `token`, `secret`,
+  /// `apikey`, `cookie`, `signature` or another long secret name anywhere,
+  /// also across a `-` (`db-password`), or when one of its words, split at
+  /// `-` and between letters and digits, is a short one such as `pin`,
+  /// `key`, `pass`, `auth`, `card`, `otp`, `cvv` or `session`. The value can
+  /// sit right next to the name (`pin-4831.example.com`,
+  /// `password.hunter2.example`), so such a host is not written, even an
+  /// ordinary one such as `auth.example.com`. A short name inside a longer
+  /// word (`spin`, `monkey`) names nothing.
+  ///
+  /// A host looks like a secret when it holds:
   ///
   /// * a card number: 13 or more digits, which may be grouped with `-`;
   /// * an IBAN: two letters, two check digits and 11 to 30 letters and
@@ -156,6 +169,55 @@ final RegExp _iban = RegExp(r'(?<![A-Za-z0-9])[A-Za-z]{2}[0-9]{2}[A-Za-z0-9]{11,
 // host labels, so this runs on the whole host.
 final RegExp _jsonWebToken = RegExp(r'(?<![A-Za-z0-9])eyj[A-Za-z0-9-]+\.[A-Za-z0-9-]{4,}', caseSensitive: false);
 const int _maxHostLength = 253;
+// A host can hold a secret next to the name of one (`pin-4831.example.com`,
+// `password.hunter2.example`), so a host that names a secret is not written.
+// The secret names of the redaction rules, with `_` and `-` removed: these
+// count anywhere in a label, also with its `-` removed (`db-password`) ...
+const List<String> _secretNamesAnywhere = [
+  'password',
+  'passwd',
+  'passphrase',
+  'passcode',
+  'secret',
+  'token',
+  'apikey',
+  'accesskey',
+  'authkey',
+  'privatekey',
+  'secretkey',
+  'authorization',
+  'credential',
+  'cookie',
+  'signature',
+  'sessionid',
+  'sessionkey',
+  'sessid',
+  'pincode',
+  'otpcode',
+  'authcode',
+  'securitycode',
+  'verificationcode',
+  'cardnumber',
+];
+// ... and these short ones only as a whole word, so that `spin` and `monkey`
+// are written. Words are split at `-` and between letters and digits.
+const Set<String> _secretWords = {
+  'pwd',
+  'pw',
+  'pass',
+  'key',
+  'pin',
+  'otp',
+  'cvv',
+  'cvc',
+  'ssn',
+  'iban',
+  'card',
+  'auth',
+  'sid',
+  'session',
+};
+final RegExp _wordBreak = RegExp('-|(?<=[a-z])(?=[0-9])|(?<=[0-9])(?=[a-z])');
 
 // The scheme, host and port of `uri` for a message, with a host that is not
 // a plain name or address written as `[R]`; see ForgeRequest.describe.
@@ -170,6 +232,7 @@ String _describeOrigin(Uri uri) {
       host.length <= _maxHostLength &&
       labels.every(_dnsLabel.hasMatch) &&
       !labels.any(_looksLikeSecret) &&
+      !labels.any(_namesSecret) &&
       !_jsonWebToken.hasMatch(host);
   return plain ? '${uri.scheme}://$host$port' : '${uri.scheme}://[R]';
 }
@@ -181,6 +244,11 @@ bool _looksLikeSecret(String label) {
       .allMatches(label)
       .map((match) => match[0]!)
       .any((run) => _letter.hasMatch(run) && _digit.hasMatch(run) && !_uuid.hasMatch(run));
+}
+
+bool _namesSecret(String label) {
+  final folded = label.replaceAll('-', '');
+  return _secretNamesAnywhere.any(folded.contains) || label.split(_wordBreak).any(_secretWords.contains);
 }
 
 // ISO 13616: the first four characters move to the end, letters become
