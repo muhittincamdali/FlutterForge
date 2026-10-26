@@ -110,7 +110,7 @@ Future<void> _runTool(ForgeEnvironment env, String tool, List<String> arguments,
     result = await env.run(tool, arguments, workingDirectory: directory);
   } on ProcessException {
     throw _Failure(
-      '`$tool` was not found. Install Flutter (https://docs.flutter.dev/get-started/install) '
+      '`$tool` was not found. Install Flutter (https://docs.flutter.dev/install) '
       'and make sure `$tool` is on your PATH.',
       ExitCodes.unavailable,
     );
