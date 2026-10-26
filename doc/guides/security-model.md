@@ -49,6 +49,9 @@ pasted from a clipboard — cannot start a second header line.
 - Every attempt has a time limit, and `CancelToken` and the time limit both
   abort the connection (with the `dart:io` and browser clients of
   `package:http`).
+- A finished request stops listening to its `CancelToken`, so one token can
+  be shared by every request of a screen, or of the whole app, without
+  keeping those requests and their bodies in memory.
 
 ## Numbers from the server cannot break the client
 

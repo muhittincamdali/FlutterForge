@@ -446,7 +446,9 @@ final class ForgeClient {
     }
 
     final timer = Timer(limit, () => stop(RequestTimeoutException(request, limit)));
-    unawaited(cancelToken?.whenCancelled.then((_) => stop(RequestCancelledException(request))));
+    // Removed in `finally`: a long-lived token must not keep finished
+    // requests, and their bodies, reachable.
+    final stopListening = cancelToken?.onCancel(() => stop(RequestCancelledException(request)));
 
     final outgoing = http.AbortableRequest(request.method, request.uri, abortTrigger: abort.future)
       ..followRedirects = false
@@ -461,6 +463,7 @@ final class ForgeClient {
     } finally {
       finished = true;
       timer.cancel();
+      stopListening?.call();
       if (!abort.isCompleted) abort.complete();
     }
   }

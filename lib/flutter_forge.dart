@@ -26,7 +26,7 @@ export 'src/network/api_exception.dart';
 export 'src/network/auth.dart';
 export 'src/network/cache.dart';
 export 'src/network/cache_policy.dart';
-export 'src/network/cancel_token.dart';
+export 'src/network/cancel_token.dart' show CancelToken;
 export 'src/network/forge_client.dart';
 export 'src/network/forge_request.dart';
 export 'src/network/forge_response.dart';

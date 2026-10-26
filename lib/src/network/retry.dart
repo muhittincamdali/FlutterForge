@@ -165,7 +165,25 @@ final class RetryInterceptor implements Interceptor {
     final token = request.cancelToken;
     if (token == null) return _sleep(delay);
     if (token.isCancelled) throw RequestCancelledException(request);
-    await Future.any([_sleep(delay), token.whenCancelled]);
+    final woken = Completer<void>();
+    void wake() {
+      if (!woken.isCompleted) woken.complete();
+    }
+
+    final stopListening = token.onCancel(wake);
+    unawaited(
+      _sleep(delay).then(
+        (_) => wake(),
+        onError: (Object error, StackTrace stack) {
+          if (!woken.isCompleted) woken.completeError(error, stack);
+        },
+      ),
+    );
+    try {
+      await woken.future;
+    } finally {
+      stopListening();
+    }
     if (token.isCancelled) throw RequestCancelledException(request);
   }
 }

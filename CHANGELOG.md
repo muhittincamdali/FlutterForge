@@ -33,7 +33,8 @@ problem and is no longer developed.
 - `BearerAuth` and `BearerAuthInterceptor`: tokens for the API origin only, one shared refresh
   for concurrent `401` answers, at most one retry per request.
 - `CancelToken`, a per-attempt `timeout` and `maxResponseBytes`, all of which abort the
-  connection when the `http` client supports `Abortable` requests.
+  connection when the `http` client supports `Abortable` requests. `CancelToken.onCancel`
+  adds a callback that can be removed again.
 - The `forge` command: `forge create` for a feature-first Flutter app (Riverpod 3,
   go_router 18, `ForgeClient`, tests for every layer, a GitHub Actions workflow and Dependabot
   settings) and `forge feature` to add a feature with its route and tests.
