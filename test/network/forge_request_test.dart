@@ -114,6 +114,23 @@ void main() {
       expect(described('https://xn--caf-dma.example'), 'GET https://xn--caf-dma.example');
     });
 
+    test('describe writes a host holding a dashed token, an IBAN or a JSON Web Token as [R]', () {
+      String described(String url) => ForgeRequest(method: 'GET', uri: Uri.parse(url)).describe();
+      expect(described('https://abcd1234-efgh5678-ijkl9012-mnop3456.example.com'), 'GET https://[R]');
+      expect(described('https://GB82WEST12345698765432.example.com/a'), 'GET https://[R]');
+      expect(described('https://pay-tr330006100519786457841326.example.com'), 'GET https://[R]');
+      expect(described('https://eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.c2ln.example.com'), 'GET https://[R]');
+      expect(described('https://eyJhbGci.eyJzdWIi.example.com'), 'GET https://[R]');
+      // A UUID, a long name without digits, an IBAN with a wrong check digit
+      // and a name that only starts with `eyj` are written as they are.
+      const uuid = '123e4567-e89b-12d3-a456-426614174000';
+      expect(described('https://$uuid.example.com'), 'GET https://$uuid.example.com');
+      const name = 'my-long-host-name-that-has-no-digit.example';
+      expect(described('https://$name'), 'GET https://$name');
+      expect(described('https://GB82WEST12345698765433.example.com'), 'GET https://gb82west12345698765433.example.com');
+      expect(described('https://eyjafjallajokull.is'), 'GET https://eyjafjallajokull.is');
+    });
+
     test('refuses a URL with user information without repeating it', () {
       for (final url in ['https://alice:hunter2@evil.example', 'https://hunter2@api.example.com/x']) {
         try {

@@ -88,12 +88,24 @@ exception object for code that needs them.
 - A URL with user information (`https://user:password@host`) is refused by
   `ForgeRequest` and `resolve`, and the error does not repeat it.
 - The host is printed only when it is a plain DNS name, an IPv4 address or an
-  IPv6 address without a zone, and none of its labels looks like a card number
-  (13 or more digits, also when grouped with `-` as in `4111-1111-1111-1111`)
-  or a key (32 or more hexadecimal digits, or 32 or more letters and digits
-  that mix both, as a base64 or base32 key does). Any other host is printed as
-  `[R]`: a failed call to `https://h.example;password=hunter2/db` reads
-  `HttpStatusException: GET https://[R] answered 500`.
+  IPv6 address without a zone, and nothing in it looks like a secret:
+  - a card number: 13 or more digits, also when grouped with `-` as in
+    `4111-1111-1111-1111`;
+  - an IBAN: two letters, two check digits and 11 to 30 letters and digits
+    that pass the mod-97 check, as in `GB82WEST12345698765432`;
+  - a key: 32 or more hexadecimal digits, or 32 or more letters, digits and
+    `-` that mix letters and digits, as a base64url token does
+    (`abcd1234-efgh5678-ijkl9012-mnop3456`); a UUID is not counted;
+  - a JSON Web Token: a label that starts with `eyJ`, followed by a label of
+    4 or more characters, as in `eyJhbGci.eyJzdWIi.example.com`.
+
+  `Uri` stores hosts in lower case, so the IBAN and token rules ignore case;
+  a lower-cased value is still readable and is not printed. Every other host
+  is printed as `[R]`: a failed call to
+  `https://h.example;password=hunter2/db` reads
+  `HttpStatusException: GET https://[R] answered 500`. The rules can hide an
+  ordinary name that has the same shape, such as a 32-character label with
+  letters and digits, which is the safer mistake.
 
 ## What FlutterForge does not do
 

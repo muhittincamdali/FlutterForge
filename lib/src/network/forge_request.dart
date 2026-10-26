@@ -114,11 +114,20 @@ final class ForgeRequest {
   /// left out because they can carry identifiers or tokens.
   ///
   /// The host is written only when it is a plain DNS name, an IPv4 address or
-  /// an IPv6 address without a zone, and none of its labels looks like a card
-  /// number (13 or more digits, which may be grouped with `-`) or a key (32 or
-  /// more hexadecimal digits, or 32 or more letters and digits that mix both).
-  /// Any other host, such as `h.example;password=hunter2`, is written as
-  /// `[R]`, followed by nothing: `GET https://[R]`.
+  /// an IPv6 address without a zone, and nothing in it looks like a secret:
+  ///
+  /// * a card number: 13 or more digits, which may be grouped with `-`;
+  /// * an IBAN: two letters, two check digits and 11 to 30 letters and
+  ///   digits that pass the mod-97 check;
+  /// * a key: 32 or more hexadecimal digits, or 32 or more letters, digits
+  ///   and `-` that mix letters and digits, as a base64url token is written
+  ///   (a UUID is not counted);
+  /// * a JSON Web Token: a label that starts with `eyJ`, followed by a label
+  ///   of 4 or more characters.
+  ///
+  /// `Uri` stores a host in lower case, so the IBAN and the token are found
+  /// in either case. Any other host, such as `h.example;password=hunter2`, is
+  /// written as `[R]`, followed by nothing: `GET https://[R]`.
   String describe() => '$method ${_describeOrigin(uri)}';
 
   @override
@@ -129,12 +138,23 @@ final RegExp _dnsLabel = RegExp(r'^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?
 final RegExp _ipv6 = RegExp(r'^[0-9A-Fa-f:.]+$');
 // A card number: 13 or more digits, in groups joined by up to three `-`.
 final RegExp _cardNumber = RegExp(r'(?<![A-Za-z0-9])\d(?:-{0,3}\d){12,}(?![A-Za-z0-9])');
-// A key: 32 or more hexadecimal digits, or 32 or more letters and digits
-// with at least one of each, as base64 or base32 keys are written in a host.
+// A key: 32 or more hexadecimal digits, or 32 or more base64url characters
+// with at least one letter and one digit (`-` counts, `_` cannot occur in a
+// label that passed _dnsLabel), as keys are written in a host. A UUID, which
+// is hexadecimal with four `-`, is not a key.
 final RegExp _longHex = RegExp(r'[0-9A-Fa-f]{32,}');
-final RegExp _longAlphanumeric = RegExp(r'[A-Za-z0-9]{32,}');
+final RegExp _longToken = RegExp(r'[A-Za-z0-9-]{32,}');
+final RegExp _uuid = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', caseSensitive: false);
 final RegExp _letter = RegExp('[A-Za-z]');
 final RegExp _digit = RegExp('[0-9]');
+// An IBAN: country code, two check digits and 11 to 30 letters and digits,
+// 15 to 34 in all, not joined to other letters or digits. Hosts are lower
+// case, so both cases count; the mod-97 check keeps ordinary names out.
+final RegExp _iban = RegExp(r'(?<![A-Za-z0-9])[A-Za-z]{2}[0-9]{2}[A-Za-z0-9]{11,30}(?![A-Za-z0-9])');
+// A JSON Web Token: `eyJ` and at least one more character, a `.`, and a
+// second segment of 4 or more characters. The dots of a token split it into
+// host labels, so this runs on the whole host.
+final RegExp _jsonWebToken = RegExp(r'(?<![A-Za-z0-9])eyj[A-Za-z0-9-]+\.[A-Za-z0-9-]{4,}', caseSensitive: false);
 const int _maxHostLength = 253;
 
 // The scheme, host and port of `uri` for a message, with a host that is not
@@ -146,13 +166,33 @@ String _describeOrigin(Uri uri) {
     return _ipv6.hasMatch(host) ? '${uri.scheme}://[$host]$port' : '${uri.scheme}://[R]';
   }
   final labels = host.split('.');
-  final plain = host.length <= _maxHostLength && labels.every(_dnsLabel.hasMatch) && !labels.any(_looksLikeSecret);
+  final plain =
+      host.length <= _maxHostLength &&
+      labels.every(_dnsLabel.hasMatch) &&
+      !labels.any(_looksLikeSecret) &&
+      !_jsonWebToken.hasMatch(host);
   return plain ? '${uri.scheme}://$host$port' : '${uri.scheme}://[R]';
 }
 
 bool _looksLikeSecret(String label) {
   if (_cardNumber.hasMatch(label) || _longHex.hasMatch(label)) return true;
-  return _longAlphanumeric.allMatches(label).any((run) => _letter.hasMatch(run[0]!) && _digit.hasMatch(run[0]!));
+  if (_iban.allMatches(label).any((match) => _passesMod97(match[0]!))) return true;
+  return _longToken
+      .allMatches(label)
+      .map((match) => match[0]!)
+      .any((run) => _letter.hasMatch(run) && _digit.hasMatch(run) && !_uuid.hasMatch(run));
+}
+
+// ISO 13616: the first four characters move to the end, letters become
+// 10 to 35, and the number is 1 modulo 97.
+bool _passesMod97(String iban) {
+  final rearranged = (iban.substring(4) + iban.substring(0, 4)).toUpperCase();
+  var remainder = 0;
+  for (final unit in rearranged.codeUnits) {
+    final value = unit <= 0x39 ? unit - 0x30 : unit - 0x41 + 10;
+    remainder = (remainder * (value < 10 ? 10 : 100) + value) % 97;
+  }
+  return remainder == 1;
 }
 
 String _checkedMethod(String method) {
