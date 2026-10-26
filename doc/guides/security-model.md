@@ -82,9 +82,11 @@ exception object for code that needs them.
   `ForgeRequest` and `resolve`, and the error does not repeat it.
 - The host is printed only when it is a plain DNS name, an IPv4 address or an
   IPv6 address without a zone, and none of its labels looks like a card number
-  (13 or more digits) or a key (32 or more hexadecimal digits). Any other host
-  is printed as `[R]`: a failed call to `https://h.example;password=hunter2/db`
-  reads `HttpStatusException: GET https://[R] answered 500`.
+  (13 or more digits, also when grouped with `-` as in `4111-1111-1111-1111`)
+  or a key (32 or more hexadecimal digits, or 32 or more letters and digits
+  that mix both, as a base64 or base32 key does). Any other host is printed as
+  `[R]`: a failed call to `https://h.example;password=hunter2/db` reads
+  `HttpStatusException: GET https://[R] answered 500`.
 
 ## What FlutterForge does not do
 

@@ -102,6 +102,18 @@ void main() {
       expect(described('https://cdn-2.example.net'), 'GET https://cdn-2.example.net');
     });
 
+    test('describe writes a host label holding a grouped card number or a mixed key as [R]', () {
+      String described(String url) => ForgeRequest(method: 'GET', uri: Uri.parse(url)).describe();
+      expect(described('https://4111-1111-1111-1111.example.com/a'), 'GET https://[R]');
+      expect(described('https://4111--1111---1111-1111.example.com'), 'GET https://[R]');
+      expect(described('https://k9x2m4p7q1w8e3r6t5y0u2i4o6p8a1s3d5.example.com/a'), 'GET https://[R]');
+      expect(described('https://eyjhbgcioijiuzi1niisinr5cci6ikpxvcj9.example.com'), 'GET https://[R]');
+      expect(described('https://pin-4831.example.com/a'), 'GET https://pin-4831.example.com');
+      expect(described('https://4111-1111-1111.example.com'), 'GET https://4111-1111-1111.example.com');
+      expect(described('https://${'q' * 40}.example.com'), 'GET https://${'q' * 40}.example.com');
+      expect(described('https://xn--caf-dma.example'), 'GET https://xn--caf-dma.example');
+    });
+
     test('refuses a URL with user information without repeating it', () {
       for (final url in ['https://alice:hunter2@evil.example', 'https://hunter2@api.example.com/x']) {
         try {

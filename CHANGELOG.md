@@ -55,7 +55,8 @@ problem and is no longer developed.
   backoff are all bounded, so a hostile or broken server cannot exhaust memory or produce an
   overflowing delay.
 - Exception messages name only the method, scheme, host and port; a host that is not a plain
-  name or address is written as `[R]`. URLs with user information are refused.
+  name or address, or that has a label holding a card number or a key, is written as `[R]`.
+  URLs with user information are refused.
 - `forge` validates every name, organisation, description and path before it runs a program
   or writes a file, and writes only inside the project folder.
 

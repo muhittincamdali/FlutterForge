@@ -115,7 +115,8 @@ final class ForgeRequest {
   ///
   /// The host is written only when it is a plain DNS name, an IPv4 address or
   /// an IPv6 address without a zone, and none of its labels looks like a card
-  /// number (13 or more digits) or a key (32 or more hexadecimal digits).
+  /// number (13 or more digits, which may be grouped with `-`) or a key (32 or
+  /// more hexadecimal digits, or 32 or more letters and digits that mix both).
   /// Any other host, such as `h.example;password=hunter2`, is written as
   /// `[R]`, followed by nothing: `GET https://[R]`.
   String describe() => '$method ${_describeOrigin(uri)}';
@@ -126,8 +127,14 @@ final class ForgeRequest {
 
 final RegExp _dnsLabel = RegExp(r'^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$');
 final RegExp _ipv6 = RegExp(r'^[0-9A-Fa-f:.]+$');
-final RegExp _longDigits = RegExp(r'^\d{13,}$');
-final RegExp _longHex = RegExp(r'^[0-9A-Fa-f]{32,}$');
+// A card number: 13 or more digits, in groups joined by up to three `-`.
+final RegExp _cardNumber = RegExp(r'(?<![A-Za-z0-9])\d(?:-{0,3}\d){12,}(?![A-Za-z0-9])');
+// A key: 32 or more hexadecimal digits, or 32 or more letters and digits
+// with at least one of each, as base64 or base32 keys are written in a host.
+final RegExp _longHex = RegExp(r'[0-9A-Fa-f]{32,}');
+final RegExp _longAlphanumeric = RegExp(r'[A-Za-z0-9]{32,}');
+final RegExp _letter = RegExp('[A-Za-z]');
+final RegExp _digit = RegExp('[0-9]');
 const int _maxHostLength = 253;
 
 // The scheme, host and port of `uri` for a message, with a host that is not
@@ -139,11 +146,13 @@ String _describeOrigin(Uri uri) {
     return _ipv6.hasMatch(host) ? '${uri.scheme}://[$host]$port' : '${uri.scheme}://[R]';
   }
   final labels = host.split('.');
-  final plain =
-      host.length <= _maxHostLength &&
-      labels.every(_dnsLabel.hasMatch) &&
-      !labels.any((label) => _longDigits.hasMatch(label) || _longHex.hasMatch(label));
+  final plain = host.length <= _maxHostLength && labels.every(_dnsLabel.hasMatch) && !labels.any(_looksLikeSecret);
   return plain ? '${uri.scheme}://$host$port' : '${uri.scheme}://[R]';
+}
+
+bool _looksLikeSecret(String label) {
+  if (_cardNumber.hasMatch(label) || _longHex.hasMatch(label)) return true;
+  return _longAlphanumeric.allMatches(label).any((run) => _letter.hasMatch(run[0]!) && _digit.hasMatch(run[0]!));
 }
 
 String _checkedMethod(String method) {
