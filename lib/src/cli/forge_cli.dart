@@ -129,7 +129,11 @@ final class _CreateCommand extends Command<int> {
   _CreateCommand(this.env) {
     argParser
       ..addOption('org', defaultsTo: 'com.example', help: 'Reverse domain used for the app id.')
-      ..addOption('description', defaultsTo: 'A Flutter app created with FlutterForge.')
+      ..addOption(
+        'description',
+        defaultsTo: 'A Flutter app created with FlutterForge.',
+        help: 'One sentence for pubspec.yaml and the README.',
+      )
       ..addOption(
         'output-directory',
         abbr: 'o',
