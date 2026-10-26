@@ -9,6 +9,13 @@
 /// final client = ForgeClient(baseUrl: 'https://api.example.com/v1');
 /// final todos = await client.getJson('/todos', decode: Todo.listFromJson);
 /// ```
+///
+/// The `forge` command, installed with the package, creates Flutter apps that
+/// use this client; see the "Building an app with forge" guide.
+///
+/// {@category calling-an-api}
+/// {@category building-an-app}
+/// {@category security-model}
 library;
 
 import 'src/network/forge_client.dart';
