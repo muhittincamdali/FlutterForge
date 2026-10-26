@@ -83,6 +83,9 @@ flutter analyze
 flutter test
 ```
 
+`.github/workflows/ci.yml` runs the same checks, and `dart format`, on GitHub
+for every push to `main` and every pull request.
+
 ## How the code is organised
 
 ```text
@@ -109,6 +112,64 @@ forge feature orders
 
 This writes `lib/features/orders/` and its tests, adds the `/orders` route and
 puts it on the home screen.
+'''),
+  TemplateFile('.github/workflows/ci.yml', r'''
+# Checks every push to main and every pull request: formatting, analysis
+# and tests. The actions are pinned to commits; Dependabot can update them.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Format, analyze and test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          cache: true
+
+      - name: Dependencies
+        run: flutter pub get
+
+      - name: Format
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
+'''),
+  TemplateFile('.github/dependabot.yml', r'''
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      github-actions:
+        patterns: ["*"]
+  - package-ecosystem: pub
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      pub:
+        patterns: ["*"]
 '''),
   TemplateFile('lib/main.dart', r'''
 import 'package:flutter/material.dart';

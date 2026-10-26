@@ -97,6 +97,8 @@ void main() {
       expect(read('shop/lib/main.dart'), contains("import 'package:shop/app/app.dart';"));
       expect(exists('shop/lib/features/todos/presentation/todos_page.dart'), isTrue);
       expect(exists('shop/test/features/todos/presentation/todos_page_test.dart'), isTrue);
+      expect(read('shop/.github/workflows/ci.yml'), contains('flutter test'));
+      expect(exists('shop/.github/dependabot.yml'), isTrue);
       expect(out.toString(), contains('cd shop'));
     });
 

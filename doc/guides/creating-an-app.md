@@ -37,6 +37,9 @@ flutter test
 ## 3. Read the layout
 
 ```text
+.github/
+  workflows/ci.yml     format, analyze and test on every push and pull request
+  dependabot.yml       monthly grouped updates of actions and packages
 lib/
   main.dart            ProviderScope around App
   app/

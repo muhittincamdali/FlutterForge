@@ -68,8 +68,8 @@ Dart. If your terminal then says `forge: command not found`, add the folder Dart
 forge create my_app
 ```
 
-This runs `flutter create` for the Android and iOS folders, writes the app and its tests, and
-runs `flutter pub get`. Add `--org com.yourcompany` to set the app id, or
+This runs `flutter create` for the Android and iOS folders, writes the app, its tests and a
+GitHub Actions workflow that checks them, and runs `flutter pub get`. Add `--org com.yourcompany` to set the app id, or
 `--platforms ios,android,web,macos` for more platforms.
 
 **3. Run it**
@@ -294,7 +294,7 @@ cd example && flutter analyze && flutter test
 
 - Upload and download progress for large bodies.
 - A persistent `ResponseCache` (files or SQLite) next to `MemoryResponseCache`.
-- More `forge` templates: localization, flavors and a generated CI workflow for the new app.
+- More `forge` templates: localization and build flavors for the new app.
 
 ## Contributing
 

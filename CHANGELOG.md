@@ -35,8 +35,8 @@ problem and is no longer developed.
 - `CancelToken`, a per-attempt `timeout` and `maxResponseBytes`, all of which abort the
   connection when the `http` client supports `Abortable` requests.
 - The `forge` command: `forge create` for a feature-first Flutter app (Riverpod 3,
-  go_router 18, `ForgeClient`, tests for every layer) and `forge feature` to add a feature with
-  its route and tests.
+  go_router 18, `ForgeClient`, tests for every layer, a GitHub Actions workflow and Dependabot
+  settings) and `forge feature` to add a feature with its route and tests.
 - An example app in `example/` that is the exact output of `forge create`, three guides in
   `doc/guides/`, API documentation on GitHub Pages, and simulator screenshots made by
   `scripts/screenshots.sh`.

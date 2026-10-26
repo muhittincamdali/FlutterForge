@@ -26,6 +26,9 @@ flutter analyze
 flutter test
 ```
 
+`.github/workflows/ci.yml` runs the same checks, and `dart format`, on GitHub
+for every push to `main` and every pull request.
+
 ## How the code is organised
 
 ```text
