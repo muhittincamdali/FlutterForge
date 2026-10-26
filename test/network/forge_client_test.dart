@@ -162,6 +162,32 @@ void main() {
       expect(client.resolve('/files/a%c0%afb').path, '/v1/files/a%C0%AFb');
     });
 
+    test('refuses dot segments ended by an encoded ? or # or hidden by invisible characters', () {
+      for (final path in [
+        '..%3f/admin',
+        '/..%3F/admin',
+        '/..%3fx=1/admin',
+        '/..%23/admin',
+        '/..%253f/admin',
+        '/..%c2%ad/admin',
+        '/..­/admin',
+        '/..%e2%80%8b/admin',
+        '/.​./admin',
+        '/..%E2%80%8D/admin',
+        '/..%e2%81%a0/admin',
+        '/..%ef%bb%bf/admin',
+        '/﻿../admin',
+        '/..%u00ad/admin',
+        '/..%u200b/admin',
+        '/..%u0000/admin',
+      ]) {
+        expect(() => client.resolve(path), throwsArgumentError, reason: path);
+      }
+      expect(client.resolve('/files/a%3Fb').path, '/v1/files/a%3Fb');
+      expect(client.resolve('/files/%3F').path, '/v1/files/%3F');
+      expect(client.resolve('/files/co%C2%ADop').path, '/v1/files/co%C2%ADop');
+    });
+
     test('refuses a two-dot leader or an ellipsis, which normalisation turns into dots', () {
       for (final path in [
         '‥/admin',

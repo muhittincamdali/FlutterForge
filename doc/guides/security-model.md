@@ -38,7 +38,9 @@ request for `/admin` (with the user's token) by a `name` of `../../admin`.
 The check reads segments the way servers may read them: it splits at `/`,
 `\` (which `Uri.parse` turns into `/`), `%2f` and `%5c`, treats `%2e` as `.`,
 and ignores a `;` parameter, so `..\admin`, `..%2fadmin` and the Tomcat-style
-`..;/admin` are refused too. It also splits at the IIS forms `%u002f` and
+`..;/admin` are refused too. A segment also ends at `%3f` and `%23`, for a
+server or proxy that decodes the path before it splits off the query or the
+fragment (`..%3f/admin`). It also splits at the IIS forms `%u002f` and
 `%u005c`, at the overlong UTF-8 forms of `/` and `\` that lenient decoders
 accept (`..%c0%afadmin`, `..%e0%80%afadmin`), at the full-width `／` and `＼`,
 which Unicode normalisation turns into `/` and `\`, and at the division slash
@@ -50,7 +52,9 @@ dots (`．．/admin`), the IIS form `%u002e` and the overlong UTF-8 form
 `…/admin`), which normalisation turns into `..` and `...`, as dots, and drops NUL and the other control characters, which C code
 stops at and servers strip or split at (`..%00/admin`, `..%0a/admin`), and
 spaces including the no-break space, which IIS trims (`.. /admin`,
-`..%c2%a0/admin`). A segment made only of
+`..%c2%a0/admin`), and the soft hyphen, the zero-width space and joiners, the
+word joiner and the byte order mark, which name folding and text filters
+remove (`..%c2%ad/admin`, `..%e2%80%8b/admin`). A segment made only of
 dots, such as `...`, is refused as well. The same check runs a second time on
 the path that is sent: `Uri.parse` decodes escapes of letters and digits and
 encodes a `%` that starts no escape, so `%25%32%65` and `%2%65` both leave as

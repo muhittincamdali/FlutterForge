@@ -49,8 +49,9 @@ problem and is no longer developed.
   the base URL. Segments are split at `/`, `\`, `%2f` and `%5c`, at their `%u` and overlong
   UTF-8 forms (`%u002f`, `%c0%af`, `%e0%80%af`), at the full-width `／` and `＼` and at the
   division slash `∕`; `%2e` and the full-width and small dots, `%u002e` and the overlong
-  `%c0%ae` count as `.`, the two-dot leader `‥` and the ellipsis `…` as dots, a `;` parameter is ignored,
-  `%25` is read as `%`, and control characters and spaces, also the no-break space, are dropped
+  `%c0%ae` count as `.`, the two-dot leader `‥` and the ellipsis `…` as dots, a segment ends at
+  a `;` parameter and at `%3f` and `%23`, `%25` is read as `%`, and control characters and
+  spaces, also the no-break space, the soft hyphen and zero-width characters, are dropped
   before the check. The check runs on the path as given and on the
   path that `Uri.parse` produces, so escapes that it rewrites (`%25%32%65`, `%2%65`) cannot
   turn into `%252e` after the check.
