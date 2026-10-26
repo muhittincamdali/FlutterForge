@@ -271,6 +271,71 @@ final class ForgeClient {
     return decodeResponse(response, decode);
   }
 
+  /// Sends `POST` with [fields] as an `application/x-www-form-urlencoded`
+  /// body, as an HTML form or an OAuth token endpoint expects, and decodes
+  /// the answer with [decode].
+  Future<T> postForm<T>(
+    String path, {
+    required Map<String, String> fields,
+    required JsonDecoder<T> decode,
+    Map<String, Object?>? query,
+    Map<String, String> headers = const {},
+    CancelToken? cancelToken,
+    Duration? timeout,
+  }) async {
+    final form = http.Request('POST', baseUrl)..bodyFields = fields;
+    final response = await request(
+      'POST',
+      path,
+      query: query,
+      headers: {'content-type': form.headers['content-type']!, ...headers},
+      body: form.bodyBytes,
+      cancelToken: cancelToken,
+      timeout: timeout,
+    );
+    return decodeResponse(response, decode);
+  }
+
+  /// Sends `POST` with a `multipart/form-data` body made of [fields] and
+  /// [files], and decodes the answer with [decode].
+  ///
+  /// The body is built in memory before it is sent, so it can be sent again
+  /// by the retry policy; for files of many megabytes, send them with your
+  /// own `http.StreamedRequest` instead.
+  ///
+  /// ```dart
+  /// final avatar = await client.postMultipart(
+  ///   '/me/avatar',
+  ///   files: [MultipartFile.fromBytes('file', pngBytes, filename: 'avatar.png')],
+  ///   decode: Avatar.fromJson,
+  /// );
+  /// ```
+  Future<T> postMultipart<T>(
+    String path, {
+    Map<String, String> fields = const {},
+    List<http.MultipartFile> files = const [],
+    required JsonDecoder<T> decode,
+    Map<String, Object?>? query,
+    Map<String, String> headers = const {},
+    CancelToken? cancelToken,
+    Duration? timeout,
+  }) async {
+    final multipart = http.MultipartRequest('POST', baseUrl)
+      ..fields.addAll(fields)
+      ..files.addAll(files);
+    final body = await multipart.finalize().toBytes();
+    final response = await request(
+      'POST',
+      path,
+      query: query,
+      headers: {'content-type': multipart.headers['content-type']!, ...headers},
+      body: body,
+      cancelToken: cancelToken,
+      timeout: timeout,
+    );
+    return decodeResponse(response, decode);
+  }
+
   /// Sends `DELETE` and returns the response.
   Future<ForgeResponse> delete(
     String path, {

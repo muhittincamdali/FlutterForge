@@ -157,6 +157,59 @@ void main() {
     });
   });
 
+  group('form and multipart bodies', () {
+    test('postForm sends URL-encoded fields', () async {
+      final fake = FakeHttp((_) => reply(200, json: {'access_token': 'x'}));
+      final token = await clientFor(fake).postForm(
+        '/oauth/token',
+        fields: {'grant_type': 'password', 'username': 'ayşe yılmaz', 'scope': 'a&b=c'},
+        decode: (json) => (json! as Map<String, Object?>)['access_token'],
+      );
+      expect(token, 'x');
+      final seen = fake.requests.single;
+      expect(seen.headers['content-type'], startsWith('application/x-www-form-urlencoded'));
+      expect(Uri.splitQueryString(seen.text), {'grant_type': 'password', 'username': 'ayşe yılmaz', 'scope': 'a&b=c'});
+    });
+
+    test('postMultipart sends fields and files with a boundary', () async {
+      final fake = FakeHttp((_) => reply(201, json: {'id': 9}));
+      await clientFor(fake).postMultipart(
+        '/uploads',
+        fields: {'caption': 'Sunset'},
+        files: [
+          MultipartFile.fromBytes('file', [0x89, 0x50, 0x4e, 0x47], filename: 'sunset.png'),
+        ],
+        decode: (json) => json,
+      );
+      final seen = fake.requests.single;
+      final contentType = seen.headers['content-type']!;
+      expect(contentType, startsWith('multipart/form-data; boundary='));
+      final boundary = contentType.split('boundary=').last;
+      final body = String.fromCharCodes(seen.body);
+      expect(body, contains('--$boundary\r\n'));
+      expect(body, contains('content-disposition: form-data; name="caption"\r\n\r\nSunset\r\n'));
+      expect(body, contains('content-disposition: form-data; name="file"; filename="sunset.png"'));
+      expect(body, endsWith('--$boundary--\r\n'));
+    });
+
+    test('a retried multipart request sends the same bytes again', () async {
+      var calls = 0;
+      final fake = FakeHttp((_) => ++calls == 1 ? reply(503) : reply(200, json: 1));
+      final client = ForgeClient(
+        baseUrl: 'https://api.example.com',
+        httpClient: fake,
+        retry: const RetryPolicy(retryNonIdempotent: true, baseDelay: Duration(milliseconds: 1)),
+      );
+      await client.postMultipart(
+        '/uploads',
+        files: [MultipartFile.fromString('file', 'hello', filename: 'a.txt')],
+        decode: (json) => json,
+      );
+      expect(fake.requests, hasLength(2));
+      expect(fake.requests[1].body, fake.requests[0].body);
+    });
+  });
+
   group('transport failures', () {
     test('a client exception becomes a ConnectionException', () async {
       final fake = FakeHttp((_) => throw http.ClientException('connection refused'));

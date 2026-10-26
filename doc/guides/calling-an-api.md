@@ -89,7 +89,28 @@ try {
 }
 ```
 
-## 4. Tune retries
+## 4. Send a form or a file
+
+```dart
+final session = await client.postForm(
+  '/oauth/token',
+  fields: {'grant_type': 'password', 'username': name, 'password': password},
+  decode: Session.fromJson,
+);
+
+final upload = await client.postMultipart(
+  '/me/avatar',
+  fields: {'caption': 'New avatar'},
+  files: [MultipartFile.fromBytes('file', pngBytes, filename: 'avatar.png')],
+  decode: Upload.fromJson,
+);
+```
+
+`MultipartFile` comes with `package:flutter_forge`. The multipart body is built
+in memory so a retry can send it again; stream very large files with your own
+`http.StreamedRequest`.
+
+## 5. Tune retries
 
 The client retries idempotent requests (`GET`, `HEAD`, `PUT`, `DELETE`,
 `OPTIONS`) up to two more times after a connection error, a timeout, or a
@@ -116,7 +137,7 @@ final once = ForgeClient(baseUrl: 'https://api.example.com', retry: RetryPolicy.
 `POST` and `PATCH` are not repeated unless you set `retryNonIdempotent: true`,
 because the server may already have acted on the first attempt.
 
-## 5. Cache responses
+## 6. Cache responses
 
 Pass a `ResponseCache` to the client and choose a `CachePolicy` per request:
 
@@ -151,7 +172,7 @@ final cache = MemoryResponseCache();
 cache.clear();
 ```
 
-## 6. Send a bearer token
+## 7. Send a bearer token
 
 ```dart
 final client = ForgeClient(
@@ -172,7 +193,7 @@ The token goes only to the origin of the base URL. On a `401` the client calls
 request again with the new token. Return `null` from `refreshToken` when the
 user has to sign in again; the caller then receives the `401`.
 
-## 7. Cancel and limit
+## 8. Cancel and limit
 
 ```dart
 final token = CancelToken();
@@ -192,7 +213,7 @@ whole exchange, from sending to the last byte of the body. Bodies longer than
 `maxResponseBytes` (16 MiB by default) fail with `ResponseTooLargeException`
 without being read to the end.
 
-## 8. Add your own interceptor
+## 9. Add your own interceptor
 
 An interceptor sees every request on its way out and every response on its
 way back:
@@ -211,7 +232,7 @@ final client = ForgeClient(
 Your interceptors run outside the cache, the retry policy and the token, so
 they see the final answer once, not every attempt.
 
-## 9. Test without a server
+## 10. Test without a server
 
 Pass a `MockClient` from `package:http/testing.dart`:
 
@@ -234,7 +255,7 @@ final client = ForgeClient(
 A client you pass in is not closed by `ForgeClient.close`, so one mock can serve
 several clients.
 
-## 10. Use a platform HTTP stack
+## 11. Use a platform HTTP stack
 
 `ForgeClient` works with any `package:http` client. To use the system network
 stacks, which respect VPN and proxy settings, pass `CupertinoClient` from

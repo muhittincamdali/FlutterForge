@@ -20,6 +20,8 @@ library;
 
 import 'src/network/forge_client.dart';
 
+export 'package:http/http.dart' show MultipartFile;
+
 export 'src/network/api_exception.dart';
 export 'src/network/auth.dart';
 export 'src/network/cache.dart';

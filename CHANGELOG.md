@@ -19,6 +19,8 @@ problem and is no longer developed.
 
 - `ForgeClient`, a JSON-over-HTTP client on `package:http` with `getJson`, `postJson`,
   `putJson`, `patchJson`, `delete`, `request` and `send`, base URL joining and query encoding.
+- `postForm` for URL-encoded forms and `postMultipart` for `multipart/form-data` uploads
+  (`MultipartFile` is re-exported from `package:http`).
 - `ForgeRequest` and `ForgeResponse`, immutable values with lower-case headers.
 - `ApiException`, a sealed family: `ConnectionException`, `RequestTimeoutException`,
   `RequestCancelledException`, `HttpStatusException`, `DecodingException`,
