@@ -15,7 +15,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // The application ID comes from `forge create --org dev.flutterforge`.
         applicationId = "dev.flutterforge.forge_example"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
@@ -31,8 +31,8 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // The example is not published, so release builds are signed with the
+            // debug keys and `flutter run --release` works without a keystore.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
