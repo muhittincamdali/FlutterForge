@@ -125,6 +125,15 @@ void main() {
       expect(client.resolve('https://cdn.example.net/a.png').toString(), 'https://cdn.example.net/a.png');
     });
 
+    test('refuses an absolute URL with user information without repeating it', () {
+      try {
+        client.resolve('https://alice:hunter2@evil.example');
+        fail('expected an ArgumentError');
+      } on ArgumentError catch (error) {
+        expect(error.toString(), isNot(contains('hunter2')));
+      }
+    });
+
     test('adds query values, skips null and repeats iterables', () {
       final uri = client.resolve('/search?sort=asc', {
         'q': 'a b',
@@ -181,6 +190,20 @@ void main() {
       expect(status.response.json(), {'error': 'missing'});
       expect(status.isTransient, isFalse);
       expect(status.toString(), 'HttpStatusException: GET https://api.example.com answered 404');
+    });
+
+    test('the message of a failed call to an odd host does not repeat the host', () async {
+      final fake = FakeHttp((_) => reply(500));
+      await expectLater(
+        clientFor(fake).request('GET', 'https://h.example;password=hunter2/db'),
+        throwsA(
+          isA<HttpStatusException>().having(
+            (e) => e.toString(),
+            'toString',
+            'HttpStatusException: GET https://[R] answered 500',
+          ),
+        ),
+      );
     });
 
     test('a decoder that throws becomes a DecodingException', () async {

@@ -73,6 +73,14 @@ scheme, host and port — never the path, query, headers or body, which can hold
 identifiers and tokens. The full request and response remain available on the
 exception object for code that needs them.
 
+- A URL with user information (`https://user:password@host`) is refused by
+  `ForgeRequest` and `resolve`, and the error does not repeat it.
+- The host is printed only when it is a plain DNS name, an IPv4 address or an
+  IPv6 address without a zone, and none of its labels looks like a card number
+  (13 or more digits) or a key (32 or more hexadecimal digits). Any other host
+  is printed as `[R]`: a failed call to `https://h.example;password=hunter2/db`
+  reads `HttpStatusException: GET https://[R] answered 500`.
+
 ## What FlutterForge does not do
 
 - **It ships no request logger.** Logging requests safely means masking

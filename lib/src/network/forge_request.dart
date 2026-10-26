@@ -25,7 +25,8 @@ final class ForgeRequest {
   /// Creates a request.
   ///
   /// Throws an [ArgumentError] when [uri] is not an absolute `http` or
-  /// `https` URL, or when a method, header name or header value is invalid.
+  /// `https` URL, when it contains user information (`user:password@`), or
+  /// when a method, header name or header value is invalid.
   ForgeRequest({
     required String method,
     required this.uri,
@@ -39,6 +40,10 @@ final class ForgeRequest {
        body = body ?? Uint8List(0) {
     if (!(uri.isScheme('http') || uri.isScheme('https')) || uri.host.isEmpty) {
       throw ArgumentError.value(uri.scheme, 'uri', 'must be an absolute http or https URL');
+    }
+    // The message does not repeat the URL: the user information is a secret.
+    if (uri.userInfo.isNotEmpty) {
+      throw ArgumentError('The URL must not contain user information.', 'uri');
     }
     final limit = timeout;
     if (limit != null && limit <= Duration.zero) {
@@ -105,12 +110,40 @@ final class ForgeRequest {
     return copyWith(headers: next);
   }
 
-  /// The method and host, for messages. The path and query are left out
-  /// because they can carry identifiers or tokens.
-  String describe() => '$method ${uri.scheme}://${uri.authority}';
+  /// The method, scheme, host and port, for messages. The path and query are
+  /// left out because they can carry identifiers or tokens.
+  ///
+  /// The host is written only when it is a plain DNS name, an IPv4 address or
+  /// an IPv6 address without a zone, and none of its labels looks like a card
+  /// number (13 or more digits) or a key (32 or more hexadecimal digits).
+  /// Any other host, such as `h.example;password=hunter2`, is written as
+  /// `[R]`, followed by nothing: `GET https://[R]`.
+  String describe() => '$method ${_describeOrigin(uri)}';
 
   @override
   String toString() => 'ForgeRequest(${describe()})';
+}
+
+final RegExp _dnsLabel = RegExp(r'^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$');
+final RegExp _ipv6 = RegExp(r'^[0-9A-Fa-f:.]+$');
+final RegExp _longDigits = RegExp(r'^\d{13,}$');
+final RegExp _longHex = RegExp(r'^[0-9A-Fa-f]{32,}$');
+const int _maxHostLength = 253;
+
+// The scheme, host and port of `uri` for a message, with a host that is not
+// a plain name or address written as `[R]`; see ForgeRequest.describe.
+String _describeOrigin(Uri uri) {
+  final host = uri.host;
+  final port = uri.hasPort ? ':${uri.port}' : '';
+  if (host.contains(':')) {
+    return _ipv6.hasMatch(host) ? '${uri.scheme}://[$host]$port' : '${uri.scheme}://[R]';
+  }
+  final labels = host.split('.');
+  final plain =
+      host.length <= _maxHostLength &&
+      labels.every(_dnsLabel.hasMatch) &&
+      !labels.any((label) => _longDigits.hasMatch(label) || _longHex.hasMatch(label));
+  return plain ? '${uri.scheme}://$host$port' : '${uri.scheme}://[R]';
 }
 
 String _checkedMethod(String method) {

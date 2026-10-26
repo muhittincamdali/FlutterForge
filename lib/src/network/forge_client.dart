@@ -114,7 +114,9 @@ final class ForgeClient {
 
   /// Builds the absolute URL for [path] and [query].
   ///
-  /// An absolute `http` or `https` [path] is used as it is. A relative path
+  /// An absolute `http` or `https` [path] is used as it is, unless it
+  /// contains user information (`user:password@`), which throws an
+  /// [ArgumentError]. A relative path
   /// may not contain `.` or `..` segments, so a value such as
   /// `'/files/$name'` with `name = '../admin'` cannot leave the base path;
   /// such a path throws an [ArgumentError]. Segments are split at `/`, `\`,
@@ -127,6 +129,10 @@ final class ForgeClient {
     Uri target;
     if (path.startsWith('http://') || path.startsWith('https://')) {
       target = Uri.parse(path);
+      // The message does not repeat the URL: the user information is a secret.
+      if (target.userInfo.isNotEmpty) {
+        throw ArgumentError('The URL must not contain user information.', 'path');
+      }
     } else {
       if (path.split(RegExp('[?#]')).first.split(_segmentSeparator).any(_isDotSegment)) {
         throw ArgumentError('The path must not contain "." or ".." segments.', 'path');

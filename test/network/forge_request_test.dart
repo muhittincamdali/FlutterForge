@@ -89,6 +89,30 @@ void main() {
       expect(request.toString(), isNot(contains('abc123')));
     });
 
+    test('describe writes a host that is not a plain name or address as [R]', () {
+      String described(String url) => ForgeRequest(method: 'GET', uri: Uri.parse(url)).describe();
+      expect(described('https://h.example;password=hunter2/db'), 'GET https://[R]');
+      expect(described('https://4111111111111111.example.com/a'), 'GET https://[R]');
+      expect(described('https://0123456789abcdef0123456789abcdef.example.com'), 'GET https://[R]');
+      expect(described('https://-bad.example.com'), 'GET https://[R]');
+      expect(described('https://[fe80::1%25en0]/x'), 'GET https://[R]');
+      expect(described('https://${'a' * 64}.example'), 'GET https://[R]');
+      expect(described('http://192.168.0.10:8080/x'), 'GET http://192.168.0.10:8080');
+      expect(described('https://[::1]:8443/x'), 'GET https://[::1]:8443');
+      expect(described('https://cdn-2.example.net'), 'GET https://cdn-2.example.net');
+    });
+
+    test('refuses a URL with user information without repeating it', () {
+      for (final url in ['https://alice:hunter2@evil.example', 'https://hunter2@api.example.com/x']) {
+        try {
+          ForgeRequest(method: 'GET', uri: Uri.parse(url));
+          fail('expected an ArgumentError for $url');
+        } on ArgumentError catch (error) {
+          expect(error.toString(), isNot(contains('hunter2')));
+        }
+      }
+    });
+
     test('copyWith keeps the body, token and timeout', () {
       final token = CancelToken();
       final request = ForgeRequest(
