@@ -49,7 +49,11 @@ void main() {
   }
 
   test('Call an API', () async {
-    final fake = server((_) => http.Response(jsonEncode({'id': 1, 'title': 'delectus aut autem'}), 200));
+    final fake = server(
+      (request) => request.method == 'POST'
+          ? http.Response(jsonEncode({'id': 201, 'title': 'Ship it'}), 201)
+          : http.Response(jsonEncode({'id': 1, 'title': 'delectus aut autem'}), 200),
+    );
 
     // README: Call an API
     final client = ForgeClient(baseUrl: 'https://jsonplaceholder.typicode.com', httpClient: fake);
@@ -60,7 +64,9 @@ void main() {
     // end
 
     expect(todo.title, 'delectus aut autem');
-    expect(created, isNotNull);
+    expect(created, {'id': 201, 'title': 'Ship it'});
+    expect(seen.last.method, 'POST');
+    expect(seen.last.url.toString(), 'https://jsonplaceholder.typicode.com/todos');
     expect(seen.last.body, '{"title":"Ship it"}');
   });
 
