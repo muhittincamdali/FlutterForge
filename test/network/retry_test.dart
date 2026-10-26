@@ -121,13 +121,16 @@ void main() {
 
     test('never repeats a POST unless retryNonIdempotent is set', () async {
       final fake = FakeHttp((_) => reply(503));
-      await expectLater(clientFor(fake, const RetryPolicy()).request('POST', '/x', json: {}), throwsA(anything));
+      await expectLater(
+        clientFor(fake, const RetryPolicy()).request('POST', '/x', json: {}),
+        throwsA(isA<HttpStatusException>().having((e) => e.statusCode, 'statusCode', 503)),
+      );
       expect(fake.requests, hasLength(1));
 
       final again = FakeHttp((_) => reply(503));
       await expectLater(
         clientFor(again, const RetryPolicy(retryNonIdempotent: true)).request('POST', '/x', json: {}),
-        throwsA(anything),
+        throwsA(isA<HttpStatusException>().having((e) => e.statusCode, 'statusCode', 503)),
       );
       expect(again.requests, hasLength(3));
     });

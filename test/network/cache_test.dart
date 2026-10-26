@@ -170,12 +170,25 @@ void main() {
       expect(fake.requests.last.headers['if-none-match'], '"x"');
     });
 
-    test('only 200 answers to GET are stored', () async {
-      final fake = FakeHttp((r) => r.url.path == '/missing' ? reply(404) : reply(201, json: 1));
+    test('a GET answer other than 200 is not stored', () async {
+      final fake = FakeHttp((r) => r.url.path == '/missing' ? reply(404) : reply(203, json: 1));
       final client = clientFor(fake);
-      await expectLater(client.request('GET', '/missing', cachePolicy: CachePolicy.cacheFirst), throwsA(anything));
-      await client.request('POST', '/a', json: {}, cachePolicy: CachePolicy.cacheFirst);
+      await expectLater(
+        client.request('GET', '/missing', cachePolicy: CachePolicy.cacheFirst),
+        throwsA(isA<HttpStatusException>().having((e) => e.statusCode, 'statusCode', 404)),
+      );
+      await client.request('GET', '/partial', cachePolicy: CachePolicy.cacheFirst);
       expect(store.length, 0);
+    });
+
+    test('a 200 answer to a method other than GET is not stored', () async {
+      final fake = FakeHttp((_) => reply(200, json: 1));
+      final client = clientFor(fake);
+      await client.request('POST', '/a', json: {}, cachePolicy: CachePolicy.cacheFirst);
+      await client.request('PUT', '/a', json: {}, cachePolicy: CachePolicy.cacheFirst);
+      expect(store.length, 0);
+      await client.request('GET', '/a', cachePolicy: CachePolicy.cacheFirst);
+      expect(store.length, 1);
     });
 
     test('networkFirst falls back to the cache when offline', () async {
