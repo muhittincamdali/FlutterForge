@@ -1,0 +1,38 @@
+{
+  "name": "FlutterForge",
+  "repository": "muhittincamdali/FlutterForge",
+  "tagline": {
+    "en": "An HTTP client and an app generator for Flutter: retries, caching, tokens and a tested feature-first layout."
+  },
+  "tags": {
+    "en": [
+      "Flutter",
+      "Dart 3",
+      "Riverpod",
+      "No codegen"
+    ]
+  },
+  "motif": "phone",
+  "buttons": [
+    "start",
+    "docs",
+    "examples"
+  ],
+  "links": {
+    "docs": "https://muhittincamdali.github.io/FlutterForge/",
+    "examples": "example"
+  },
+  "languages": [
+    "en",
+    "tr",
+    "zh-CN",
+    "ja",
+    "ko",
+    "es",
+    "de",
+    "fr",
+    "pt-BR",
+    "ru"
+  ],
+  "socialTheme": "dark"
+}
