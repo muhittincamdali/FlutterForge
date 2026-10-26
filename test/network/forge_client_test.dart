@@ -97,6 +97,30 @@ void main() {
       expect(client.resolve('/a?next=../b').queryParameters, {'next': '../b'});
     });
 
+    test('refuses dot segments that a server decoding twice or trimming names would see', () {
+      for (final path in [
+        '%252e%252e/admin',
+        '/%25252E%25252E/admin',
+        '/..%252fadmin',
+        '..%00/admin',
+        '/..\u0000/admin',
+        '.. /admin',
+        '/..%20/admin',
+        '\t../admin',
+        '/..%09/admin',
+        '．．/admin',
+        '/%EF%BC%8E%EF%BC%8E/admin',
+        '/﹒﹒/admin',
+        '... /admin',
+        '/.../admin',
+      ]) {
+        expect(() => client.resolve(path), throwsArgumentError, reason: path);
+      }
+      expect(client.resolve('/files/100%25').path, '/v1/files/100%25');
+      expect(client.resolve('/files/a%20b').path, '/v1/files/a%20b');
+      expect(client.resolve('/files/..%20notes').path, '/v1/files/..%20notes');
+    });
+
     test('keeps an encoded slash that is not part of a dot segment', () {
       expect(client.resolve('/files/a%2Fb').path, '/v1/files/a%2Fb');
       expect(client.resolve('/files/a;v=1').path, '/v1/files/a;v=1');

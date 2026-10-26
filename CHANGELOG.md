@@ -46,8 +46,9 @@ problem and is no longer developed.
 
 - Header names and methods must be HTTP tokens and header values cannot contain CR, LF or NUL.
 - Relative paths with `.` or `..` segments are refused, so user input in a path cannot leave
-  the base URL. Segments are split at `/`, `\`, `%2f` and `%5c`, `%2e` counts as `.` and a
-  `;` parameter is ignored.
+  the base URL. Segments are split at `/`, `\`, `%2f` and `%5c`, `%2e` and the full-width and
+  small dots count as `.`, a `;` parameter is ignored, `%25` is read as `%` and NUL characters
+  and spaces are dropped before the check.
 - Redirects are followed by the client: `https` to `http`, other schemes and URLs with user
   information are refused; `Authorization`, `Cookie` and `Proxy-Authorization` are removed when
   the origin changes, and a request body is never resent to another origin.

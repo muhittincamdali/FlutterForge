@@ -123,9 +123,13 @@ final class ForgeClient {
   /// [ArgumentError]. A relative path
   /// may not contain `.` or `..` segments, so a value such as
   /// `'/files/$name'` with `name = '../admin'` cannot leave the base path;
-  /// such a path throws an [ArgumentError]. Segments are split at `/`, `\`,
-  /// `%2f` and `%5c`, a `;` parameter is ignored (`..;x` counts as `..`), and
-  /// `%2e` counts as `.`. A fragment is dropped.
+  /// such a path throws an [ArgumentError]. Segments are read the way a
+  /// server may read them: `%25` is decoded first (`%252e` counts as `.`),
+  /// segments are split at `/`, `\`, `%2f` and `%5c`, a `;` parameter is
+  /// ignored (`..;x` counts as `..`), `%2e` and the full-width and small dots
+  /// count as `.`, and NUL characters and spaces are dropped, so `..%00`,
+  /// `.. ` and `．．` count as `..`. A segment made only of dots, such as
+  /// `...`, is refused too. A fragment is dropped.
   ///
   /// Query values are converted with `toString`; `null` values are skipped
   /// and an [Iterable] adds the parameter once per element.
@@ -138,7 +142,7 @@ final class ForgeClient {
         throw ArgumentError('The URL must not contain user information.', 'path');
       }
     } else {
-      if (path.split(RegExp('[?#]')).first.split(_segmentSeparator).any(_isDotSegment)) {
+      if (_decodedTwice(path.split(RegExp('[?#]')).first).split(_segmentSeparator).any(_isDotSegment)) {
         throw ArgumentError('The path must not contain "." or ".." segments.', 'path');
       }
       final basePath = baseUrl.path.endsWith('/') ? baseUrl.path.substring(0, baseUrl.path.length - 1) : baseUrl.path;
@@ -532,10 +536,33 @@ final RegExp _segmentSeparator = RegExp(r'[/\\]|%2f|%5c', caseSensitive: false);
 // Servers such as Tomcat read `..;x` as `..` with a parameter.
 final RegExp _segmentParameters = RegExp(';|%3b', caseSensitive: false);
 
+// Servers that decode a path twice read `%252e` as `.`, so every `%25` is
+// read as `%` before the path is split, however often it is nested.
+final RegExp _encodedPercent = RegExp('%25', caseSensitive: false);
+
+String _decodedTwice(String path) {
+  var decoded = path;
+  while (_encodedPercent.hasMatch(decoded)) {
+    decoded = decoded.replaceAll(_encodedPercent, '%');
+  }
+  return decoded;
+}
+
+// What a server may read as `.`: `%2e`, and the full-width, small and
+// one-dot-leader dots that Unicode normalisation turns into `.`, raw or
+// percent-encoded as UTF-8.
+final RegExp _dotLike = RegExp(r'%2e|\uFF0E|\uFE52|\u2024|%ef%bc%8e|%ef%b9%92|%e2%80%a4', caseSensitive: false);
+
+// What a server may drop from a segment: NUL, which ends a C string, and
+// spaces and tabs, which IIS and Windows trim from the end of a name.
+final RegExp _droppedByServers = RegExp(r'%00|%09|%20|[\s\x00]', caseSensitive: false);
+
+final RegExp _onlyDots = RegExp(r'^\.+$');
+
 bool _isDotSegment(String segment) {
   final name = segment.split(_segmentParameters).first;
-  final decoded = name.replaceAll(RegExp('%2e', caseSensitive: false), '.');
-  return decoded == '.' || decoded == '..';
+  final decoded = name.replaceAll(_dotLike, '.').replaceAll(_droppedByServers, '');
+  return _onlyDots.hasMatch(decoded);
 }
 
 // The messages do not repeat the value: it may hold a password or a key.

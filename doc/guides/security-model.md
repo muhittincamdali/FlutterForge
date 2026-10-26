@@ -38,8 +38,12 @@ request for `/admin` (with the user's token) by a `name` of `../../admin`.
 The check reads segments the way servers may read them: it splits at `/`,
 `\` (which `Uri.parse` turns into `/`), `%2f` and `%5c`, treats `%2e` as `.`,
 and ignores a `;` parameter, so `..\admin`, `..%2fadmin` and the Tomcat-style
-`..;/admin` are refused too. The joined URL must also still start with the
-base path. A path with two leading slashes stays on the base host.
+`..;/admin` are refused too. It also reads `%25` as `%` first, for servers
+that decode a path twice (`%252e%252e/admin`), treats the full-width and small
+dots (`．．/admin`) as `.`, and drops NUL characters and spaces, which C code
+stops at and IIS trims (`..%00/admin`, `.. /admin`). A segment made only of
+dots, such as `...`, is refused as well. The joined URL must also still start
+with the base path. A path with two leading slashes stays on the base host.
 
 ## Headers cannot be injected
 
