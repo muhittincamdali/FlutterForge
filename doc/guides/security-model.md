@@ -26,10 +26,15 @@ about the web describes browser behaviour.
 ## Paths cannot climb out of the base URL
 
 Relative paths are appended to the base path, and a path with a `.` or `..`
-segment — also written as `%2e` — is refused with an `ArgumentError`. Code
-such as `client.getJson('/files/$name', …)` therefore cannot be turned into a
+segment is refused with an `ArgumentError` before anything is sent. Code such
+as `client.getJson('/files/$name', …)` therefore cannot be turned into a
 request for `/admin` (with the user's token) by a `name` of `../../admin`.
-A path with two leading slashes stays on the base host.
+
+The check reads segments the way servers may read them: it splits at `/`,
+`\` (which `Uri.parse` turns into `/`), `%2f` and `%5c`, treats `%2e` as `.`,
+and ignores a `;` parameter, so `..\admin`, `..%2fadmin` and the Tomcat-style
+`..;/admin` are refused too. The joined URL must also still start with the
+base path. A path with two leading slashes stays on the base host.
 
 ## Headers cannot be injected
 

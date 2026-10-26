@@ -80,11 +80,40 @@ void main() {
         '/files/%2E%2E',
         '..',
         '/x/..?q=1',
+        r'..\admin',
+        r'/files/..\..\admin',
+        r'/a/.\b',
+        '/..;/admin',
+        '/a/..;jsessionid=1/b',
+        '/a/..%3Bx/b',
+        '/..%2fadmin',
+        '/..%2Fadmin',
+        '/..%5cadmin',
+        '/%2e%2e%5Cadmin',
       ]) {
         expect(() => client.resolve(path), throwsArgumentError, reason: path);
       }
       expect(client.resolve('/files/..hidden').path, '/v1/files/..hidden');
       expect(client.resolve('/a?next=../b').queryParameters, {'next': '../b'});
+    });
+
+    test('keeps an encoded slash that is not part of a dot segment', () {
+      expect(client.resolve('/files/a%2Fb').path, '/v1/files/a%2Fb');
+      expect(client.resolve('/files/a;v=1').path, '/v1/files/a;v=1');
+    });
+
+    test('sends nothing, and no token, for a path that climbs out', () async {
+      final fake = FakeHttp((_) => reply(200, json: {}));
+      final client = ForgeClient(
+        baseUrl: 'https://api.example.com/v1',
+        httpClient: fake,
+        retry: RetryPolicy.none,
+        auth: BearerAuth(readToken: () => 'secret'),
+      );
+      for (final path in [r'..\admin', '..;/admin', '..%2fadmin']) {
+        await expectLater(client.getJson(path, decode: (json) => json), throwsArgumentError, reason: path);
+      }
+      expect(fake.requests, isEmpty);
     });
 
     test('keeps a protocol-relative path on the base host and drops fragments', () {
