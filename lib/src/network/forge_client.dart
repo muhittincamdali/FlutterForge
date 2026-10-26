@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 import 'api_exception.dart';
+import 'cache.dart';
 import 'cache_policy.dart';
 import 'cancel_token.dart';
 import 'forge_request.dart';
@@ -30,7 +31,8 @@ const int redirectLimit = 20;
 /// ```
 ///
 /// Every call goes through, from the outside in: your [Interceptor]s, the
-/// retry policy, and the transport. The transport follows redirects itself so it can
+/// cache (when a [ResponseCache] is given), the retry policy, and the
+/// transport. The transport follows redirects itself so it can
 /// refuse unsafe ones and drop credentials when a redirect leaves the
 /// original origin.
 ///
@@ -60,6 +62,7 @@ final class ForgeClient {
     this.maxResponseBytes = 16 * 1024 * 1024,
     this.maxRedirects = 5,
     RetryPolicy retry = const RetryPolicy(),
+    ResponseCache? cache,
     List<Interceptor> interceptors = const [],
   }) : baseUrl = _checkedBaseUrl(baseUrl),
        _http = httpClient ?? http.Client(),
@@ -76,7 +79,11 @@ final class ForgeClient {
     }
     // Validates the default headers once, here, instead of on the first call.
     ForgeRequest(method: 'GET', uri: this.baseUrl, headers: _headers);
-    _handler = buildChain([...interceptors, if (retry.attempts > 1) RetryInterceptor(retry)], _transport);
+    _handler = buildChain([
+      ...interceptors,
+      if (cache != null) CacheInterceptor(cache),
+      if (retry.attempts > 1) RetryInterceptor(retry),
+    ], _transport);
   }
 
   /// The URL that relative paths are appended to.
