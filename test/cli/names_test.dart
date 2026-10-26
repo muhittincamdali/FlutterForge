@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter_forge/src/cli/generator.dart';
 import 'package:flutter_forge/src/cli/names.dart';
 import 'package:test/test.dart';
@@ -158,5 +160,29 @@ void main() {
       expect(singularEntity('analysis'), 'Analysis');
       expect(singularEntity('inventory'), 'Inventory');
     });
+  });
+
+  test('random input only ever passes or fails with InvalidInput', () {
+    final random = math.Random(42);
+    const alphabet = 'abcXYZ019_-./\\ \$"\'`&|<>^%\n\r\t\u0000é界🙂:;=';
+    for (var i = 0; i < 5000; i++) {
+      final text = String.fromCharCodes([
+        for (var j = 0; j < random.nextInt(90); j++) alphabet.codeUnitAt(random.nextInt(alphabet.length)),
+      ]);
+      for (final check in [
+        checkProjectName,
+        checkFeatureName,
+        checkEntityName,
+        checkOrganization,
+        checkDescription,
+        checkApiPath,
+      ]) {
+        try {
+          check(text);
+        } on InvalidInput catch (error) {
+          expect(error.message, isNot(contains('\u0000')));
+        }
+      }
+    }
   });
 }
