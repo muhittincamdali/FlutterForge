@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 import 'api_exception.dart';
+import 'auth.dart';
 import 'cache.dart';
 import 'cache_policy.dart';
 import 'cancel_token.dart';
@@ -31,10 +32,10 @@ const int redirectLimit = 20;
 /// ```
 ///
 /// Every call goes through, from the outside in: your [Interceptor]s, the
-/// cache (when a [ResponseCache] is given), the retry policy, and the
-/// transport. The transport follows redirects itself so it can
-/// refuse unsafe ones and drop credentials when a redirect leaves the
-/// original origin.
+/// cache (when a [ResponseCache] is given), the retry policy, the bearer
+/// token (when [BearerAuth] is given), and the transport. The transport
+/// follows redirects itself so it can refuse unsafe ones and drop credentials
+/// when a redirect leaves the original origin.
 ///
 /// Methods ending in `Json` throw an [ApiException] for a status outside
 /// 2xx and for a body the decoder cannot read; [send] returns every response
@@ -63,6 +64,7 @@ final class ForgeClient {
     this.maxRedirects = 5,
     RetryPolicy retry = const RetryPolicy(),
     ResponseCache? cache,
+    BearerAuth? auth,
     List<Interceptor> interceptors = const [],
   }) : baseUrl = _checkedBaseUrl(baseUrl),
        _http = httpClient ?? http.Client(),
@@ -83,6 +85,12 @@ final class ForgeClient {
       ...interceptors,
       if (cache != null) CacheInterceptor(cache),
       if (retry.attempts > 1) RetryInterceptor(retry),
+      if (auth != null)
+        BearerAuthInterceptor(
+          readToken: auth.readToken,
+          refreshToken: auth.refreshToken,
+          trustedOrigins: [this.baseUrl],
+        ),
     ], _transport);
   }
 
