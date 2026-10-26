@@ -42,8 +42,11 @@ and ignores a `;` parameter, so `..\admin`, `..%2fadmin` and the Tomcat-style
 that decode a path twice (`%252e%252e/admin`), treats the full-width and small
 dots (`．．/admin`) as `.`, and drops NUL characters and spaces, which C code
 stops at and IIS trims (`..%00/admin`, `.. /admin`). A segment made only of
-dots, such as `...`, is refused as well. The joined URL must also still start
-with the base path. A path with two leading slashes stays on the base host.
+dots, such as `...`, is refused as well. The same check runs a second time on
+the path that is sent: `Uri.parse` decodes escapes of letters and digits and
+encodes a `%` that starts no escape, so `%25%32%65` and `%2%65` both leave as
+`%252e`, which a server that decodes twice reads as `.`. The joined URL must
+also still start with the base path. A path with two leading slashes stays on the base host.
 
 ## Headers cannot be injected
 

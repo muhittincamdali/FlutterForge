@@ -129,7 +129,10 @@ final class ForgeClient {
   /// ignored (`..;x` counts as `..`), `%2e` and the full-width and small dots
   /// count as `.`, and NUL characters and spaces are dropped, so `..%00`,
   /// `.. ` and `．．` count as `..`. A segment made only of dots, such as
-  /// `...`, is refused too. A fragment is dropped.
+  /// `...`, is refused too. The check runs on the path as given and again on
+  /// the path that is sent, after `Uri.parse` has decoded escapes such as
+  /// `%32` and encoded a stray `%`, so `%25%32%65` and `%2%65`, which are sent
+  /// as `%252e`, count as `.` as well. A fragment is dropped.
   ///
   /// Query values are converted with `toString`; `null` values are skipped
   /// and an [Iterable] adds the parameter once per element.
@@ -152,6 +155,12 @@ final class ForgeClient {
       // the check above does not know about.
       if (target.authority != baseUrl.authority || !target.path.startsWith('$basePath/')) {
         throw ArgumentError('The path must stay below the base URL.', 'path');
+      }
+      // Uri.parse decodes escapes of unreserved characters and encodes a `%`
+      // that starts no valid escape, so `%25%32%65` and `%2%65` are sent as
+      // `%252e`. The path that is sent is checked again for that reason.
+      if (_hasDotSegment(target.path.substring(basePath.length + 1))) {
+        throw ArgumentError('The path must not contain "." or ".." segments.', 'path');
       }
     }
     target = target.removeFragment();

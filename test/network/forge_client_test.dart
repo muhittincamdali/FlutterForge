@@ -121,6 +121,22 @@ void main() {
       expect(client.resolve('/files/..%20notes').path, '/v1/files/..%20notes');
     });
 
+    test('refuses a path that becomes a dot segment when Uri.parse rewrites its escapes', () {
+      // Uri.parse decodes `%32` and `%65` and encodes a `%` that starts no
+      // escape, so each of these would be sent with `%252e` or `%252f`.
+      for (final path in [
+        '%25%32%65%25%32%65/admin',
+        '/%2%65%2%65/admin',
+        '%2e%2e%25%32%66admin',
+        '/files/%25%32%65',
+        '/%2%45%2%45/admin',
+      ]) {
+        expect(() => client.resolve(path), throwsArgumentError, reason: path);
+      }
+      expect(client.resolve('/files/%32%65').path, '/v1/files/2e');
+      expect(client.resolve('/files/%2%41').path, '/v1/files/%252A');
+    });
+
     test('reads a deeply nested %25 in time linear in the path length', () {
       // 320 KB of `%2525…252e`: a check that replaced `%25` until none was
       // left took minutes on such a path.
