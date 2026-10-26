@@ -142,7 +142,7 @@ final class ForgeClient {
         throw ArgumentError('The URL must not contain user information.', 'path');
       }
     } else {
-      if (_decodedTwice(path.split(RegExp('[?#]')).first).split(_segmentSeparator).any(_isDotSegment)) {
+      if (_hasDotSegment(path.split(RegExp('[?#]')).first)) {
         throw ArgumentError('The path must not contain "." or ".." segments.', 'path');
       }
       final basePath = baseUrl.path.endsWith('/') ? baseUrl.path.substring(0, baseUrl.path.length - 1) : baseUrl.path;
@@ -536,17 +536,12 @@ final RegExp _segmentSeparator = RegExp(r'[/\\]|%2f|%5c', caseSensitive: false);
 // Servers such as Tomcat read `..;x` as `..` with a parameter.
 final RegExp _segmentParameters = RegExp(';|%3b', caseSensitive: false);
 
-// Servers that decode a path twice read `%252e` as `.`, so every `%25` is
-// read as `%` before the path is split, however often it is nested.
-final RegExp _encodedPercent = RegExp('%25', caseSensitive: false);
+// Servers that decode a path twice read `%252e` as `.`, so every `%` followed
+// by one or more `25` is read as `%` before the path is split, however often
+// it is nested. One pass keeps the check linear in the length of the path.
+final RegExp _encodedPercent = RegExp('%(?:25)+', caseSensitive: false);
 
-String _decodedTwice(String path) {
-  var decoded = path;
-  while (_encodedPercent.hasMatch(decoded)) {
-    decoded = decoded.replaceAll(_encodedPercent, '%');
-  }
-  return decoded;
-}
+bool _hasDotSegment(String path) => path.replaceAll(_encodedPercent, '%').split(_segmentSeparator).any(_isDotSegment);
 
 // What a server may read as `.`: `%2e`, and the full-width, small and
 // one-dot-leader dots that Unicode normalisation turns into `.`, raw or

@@ -121,6 +121,16 @@ void main() {
       expect(client.resolve('/files/..%20notes').path, '/v1/files/..%20notes');
     });
 
+    test('reads a deeply nested %25 in time linear in the path length', () {
+      // 320 KB of `%2525…252e`: a check that replaced `%25` until none was
+      // left took minutes on such a path.
+      final nested = '%${'25' * 160000}2e';
+      final stopwatch = Stopwatch()..start();
+      expect(() => client.resolve('/$nested/admin'), throwsArgumentError);
+      expect(client.resolve('/files/${'%25' * 100000}').path, startsWith('/v1/files/%25%25'));
+      expect(stopwatch.elapsed, lessThan(const Duration(seconds: 2)));
+    });
+
     test('keeps an encoded slash that is not part of a dot segment', () {
       expect(client.resolve('/files/a%2Fb').path, '/v1/files/a%2Fb');
       expect(client.resolve('/files/a;v=1').path, '/v1/files/a;v=1');
