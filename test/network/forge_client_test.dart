@@ -71,6 +71,27 @@ void main() {
       expect(client.resolve('todos/7').toString(), 'https://api.example.com/v1/todos/7');
     });
 
+    test('refuses dot segments that would leave the base path', () {
+      for (final path in [
+        '/../admin',
+        'files/../../admin',
+        '/a/./b',
+        '/%2e%2e/admin',
+        '/files/%2E%2E',
+        '..',
+        '/x/..?q=1',
+      ]) {
+        expect(() => client.resolve(path), throwsArgumentError, reason: path);
+      }
+      expect(client.resolve('/files/..hidden').path, '/v1/files/..hidden');
+      expect(client.resolve('/a?next=../b').queryParameters, {'next': '../b'});
+    });
+
+    test('keeps a protocol-relative path on the base host and drops fragments', () {
+      expect(client.resolve('//evil.example/x').host, 'api.example.com');
+      expect(client.resolve('/a#section').hasFragment, isFalse);
+    });
+
     test('uses an absolute URL as it is', () {
       expect(client.resolve('https://cdn.example.net/a.png').toString(), 'https://cdn.example.net/a.png');
     });

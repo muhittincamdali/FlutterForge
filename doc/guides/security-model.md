@@ -23,6 +23,14 @@ about the web describes browser behaviour.
   cross-origin redirect); the rules above apply on Android, iOS, macOS,
   Windows, Linux and the Dart VM.
 
+## Paths cannot climb out of the base URL
+
+Relative paths are appended to the base path, and a path with a `.` or `..`
+segment — also written as `%2e` — is refused with an `ArgumentError`. Code
+such as `client.getJson('/files/$name', …)` therefore cannot be turned into a
+request for `/admin` (with the user's token) by a `name` of `../../admin`.
+A path with two leading slashes stays on the base host.
+
 ## Headers cannot be injected
 
 `ForgeRequest` rejects a method or header name that is not an HTTP token and a

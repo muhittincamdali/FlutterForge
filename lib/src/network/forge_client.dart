@@ -114,18 +114,26 @@ final class ForgeClient {
 
   /// Builds the absolute URL for [path] and [query].
   ///
-  /// An absolute `http` or `https` [path] is used as it is. Query values are
-  /// converted with `toString`; `null` values are skipped and an [Iterable]
-  /// adds the parameter once per element.
+  /// An absolute `http` or `https` [path] is used as it is. A relative path
+  /// may not contain `.` or `..` segments (also when written as `%2e`), so a
+  /// value such as `'/files/$name'` with `name = '../admin'` cannot leave the
+  /// base path; such a path throws an [ArgumentError]. A fragment is dropped.
+  ///
+  /// Query values are converted with `toString`; `null` values are skipped
+  /// and an [Iterable] adds the parameter once per element.
   Uri resolve(String path, [Map<String, Object?>? query]) {
-    final Uri target;
+    Uri target;
     if (path.startsWith('http://') || path.startsWith('https://')) {
       target = Uri.parse(path);
     } else {
+      if (path.split(RegExp('[?#]')).first.split('/').any(_isDotSegment)) {
+        throw ArgumentError('The path must not contain "." or ".." segments.', 'path');
+      }
       final basePath = baseUrl.path.endsWith('/') ? baseUrl.path.substring(0, baseUrl.path.length - 1) : baseUrl.path;
       final relative = path.startsWith('/') ? path.substring(1) : path;
       target = Uri.parse('${baseUrl.scheme}://${baseUrl.authority}$basePath/$relative');
     }
+    target = target.removeFragment();
     if (query == null || query.isEmpty) return target;
     final parameters = <String, List<String>>{
       ...target.queryParametersAll.map((k, v) => MapEntry(k, [...v])),
@@ -495,6 +503,11 @@ final class ForgeClient {
       reasonPhrase: streamed.reasonPhrase,
     );
   }
+}
+
+bool _isDotSegment(String segment) {
+  final decoded = segment.replaceAll(RegExp('%2e', caseSensitive: false), '.');
+  return decoded == '.' || decoded == '..';
 }
 
 // The messages do not repeat the value: it may hold a password or a key.
