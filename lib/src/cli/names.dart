@@ -149,8 +149,9 @@ String checkOrganization(String org) {
 }
 
 /// Checks a one-line app description. It is written into `pubspec.yaml` and
-/// passed to `flutter create`, so quotes, backslashes, shell metacharacters
-/// and control characters are refused.
+/// passed to `flutter create`, so double quotes, backslashes, shell
+/// metacharacters and control characters are refused. An apostrophe is
+/// allowed: it is safe inside the double-quoted YAML string.
 String checkDescription(String description) {
   final trimmed = description.trim();
   if (trimmed.isEmpty) throw const InvalidInput('The description is empty.');
@@ -158,9 +159,7 @@ String checkDescription(String description) {
     throw const InvalidInput('The description is longer than $maxDescriptionLength characters.');
   }
   if (_descriptionForbidden.hasMatch(trimmed)) {
-    throw const InvalidInput(
-      r'The description must not contain quotes, \, `, $, &, |, <, >, ^, % or control characters.',
-    );
+    throw const InvalidInput(r'The description must not contain ", \, `, $, &, |, <, >, ^, % or control characters.');
   }
   return trimmed;
 }

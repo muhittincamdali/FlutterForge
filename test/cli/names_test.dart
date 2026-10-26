@@ -97,6 +97,7 @@ void main() {
   group('checkDescription', () {
     test('trims and accepts plain sentences', () {
       expect(checkDescription('  A shop app: orders, invoices (beta).  '), 'A shop app: orders, invoices (beta).');
+      expect(checkDescription("Ayşe's shop"), "Ayşe's shop");
     });
 
     test('rejects text that could break YAML or a shell', () {
