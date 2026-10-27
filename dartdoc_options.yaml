@@ -1,0 +1,17 @@
+dartdoc:
+  categories:
+    calling-an-api:
+      displayName: Calling an API
+      markdown: doc/guides/calling-an-api.md
+    creating-an-app:
+      displayName: Building an app with forge
+      markdown: doc/guides/creating-an-app.md
+    security-model:
+      displayName: Security model
+      markdown: doc/guides/security-model.md
+  categoryOrder:
+    - calling-an-api
+    - creating-an-app
+    - security-model
+  errors:
+    - unresolved-doc-reference

@@ -1,112 +1,49 @@
-# Contributing to FlutterForge
+# Contributing
 
-First off, thank you for considering contributing to FlutterForge! It's people like you that make FlutterForge such a great tool.
+Thanks for taking the time to improve FlutterForge.
 
-## Code of Conduct
+## Reporting bugs
 
-This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+Open an issue with:
 
-## How Can I Contribute?
+- the `ForgeClient` settings or the `forge` command line you used,
+- what you expected and what happened (the exception type and its message, or the output of
+  `forge`),
+- `flutter --version` and the platform (Android, iOS, macOS, Windows, Linux, web or the Dart VM).
 
-### Reporting Bugs
+Report security issues privately as described in the
+[security policy](https://github.com/muhittincamdali/.github/blob/main/SECURITY.md).
 
-Before creating bug reports, please check the existing issues as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
+## Pull requests
 
-- **Use a clear and descriptive title**
-- **Describe the exact steps which reproduce the problem**
-- **Provide specific examples to demonstrate the steps**
-- **Describe the behavior you observed after following the steps**
-- **Explain which behavior you expected to see instead and why**
-- **Include Flutter/Dart version and OS version**
+1. Fork the repository and branch from `main`.
+2. Keep each pull request focused on one change.
+3. Run the checks:
 
-### Suggesting Enhancements
+   ```sh
+   dart format --output=none --set-exit-if-changed .
+   dart analyze
+   dart test
+   cd example && flutter analyze && flutter test
+   ```
 
-Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, please include:
+4. If you change the client, add or update a test in `test/network/`. The fake `http.Client` in
+   `test/support/fake_http.dart` can stream a body, never answer, or record aborts.
+5. If you change a template in `lib/src/cli/templates/`, run `scripts/regenerate_example.sh`
+   and commit the changes in `example/`. `test/cli/example_sync_test.dart` fails while the
+   example and the templates differ.
+6. If you change a code sample in `README.md`, change its copy in `test/readme_test.dart`.
+7. If a change affects the example's screens, run `scripts/screenshots.sh` on a Mac with Xcode.
+8. `README.md` has translations (`README.<language>.md`). Each one records the version of
+   `README.md` it follows, and CI fails while a translation is behind. If you change
+   `README.md` and cannot update the translations, say so in the pull request and they will be
+   updated before it is merged.
+9. Add a line under "Unreleased" in `CHANGELOG.md`.
 
-- **Use a clear and descriptive title**
-- **Provide a step-by-step description of the suggested enhancement**
-- **Provide specific examples to demonstrate the steps**
-- **Describe the current behavior and explain which behavior you expected to see instead**
-- **Explain why this enhancement would be useful**
+## Code style
 
-### Pull Requests
-
-1. Fork the repo and create your branch from `main`
-2. If you've added code that should be tested, add tests
-3. If you've changed APIs, update the documentation
-4. Ensure the test suite passes
-5. Make sure your code follows the existing style (analysis_options.yaml)
-6. Issue that pull request!
-
-## Development Setup
-
-```bash
-# Clone your fork
-git clone https://github.com/YOUR_USERNAME/FlutterForge.git
-
-# Navigate to the project
-cd FlutterForge
-
-# Install dependencies
-flutter pub get
-
-# Run tests
-flutter test
-
-# Run the CLI locally
-dart run bin/flutter_forge.dart create test_app
-```
-
-## Project Structure
-
-```
-lib/
-├── src/
-│   ├── commands/       # CLI command implementations
-│   ├── generators/     # Code generators for features, models, etc.
-│   ├── templates/      # Template files for code generation
-│   └── utils/          # Shared utilities
-├── flutter_forge.dart  # Public API
-bin/
-└── flutter_forge.dart  # CLI entry point
-test/
-└── ...                 # Test files
-```
-
-## Style Guide
-
-- Follow [Effective Dart](https://dart.dev/effective-dart) guidelines
-- Use the project's `analysis_options.yaml` for linting
-- Write meaningful commit messages following [Conventional Commits](https://www.conventionalcommits.org/)
-- Document public APIs with dartdoc comments
-
-## Commit Messages
-
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
-
-- `feat:` A new feature
-- `fix:` A bug fix
-- `docs:` Documentation only changes
-- `style:` Code style changes (formatting, etc.)
-- `refactor:` Code change that neither fixes a bug nor adds a feature
-- `test:` Adding missing tests
-- `chore:` Changes to the build process or auxiliary tools
-
-Example: `feat(generator): add service layer code generation`
-
-## Testing
-
-```bash
-# Run all tests
-flutter test
-
-# Run tests with coverage
-flutter test --coverage
-
-# Run a specific test file
-flutter test test/commands/create_test.dart
-```
-
-## License
-
-By contributing, you agree that your contributions will be licensed under the MIT License.
+- Follow [Effective Dart](https://dart.dev/effective-dart); `analysis_options.yaml` enables
+  the extra lints the package uses, and lines are up to 120 characters.
+- Document every public member with `///` comments; `dart doc` fails on unresolved references.
+- Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
+  (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `ci:`, `chore:`).

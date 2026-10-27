@@ -1,65 +1,34 @@
-/// FlutterForge - Production-ready Flutter project template
+/// A JSON-over-HTTP client for Flutter and Dart apps: interceptors, retries
+/// with backoff, a response cache with revalidation, bearer tokens with a
+/// shared refresh, time limits, cancellation, a response size limit and safe
+/// redirects.
 ///
-/// A comprehensive Flutter application template featuring clean architecture,
-/// Riverpod state management, and production-ready tooling.
-library flutter_forge;
+/// Start with [ForgeClient]:
+///
+/// ```dart
+/// final client = ForgeClient(baseUrl: 'https://api.example.com/v1');
+/// final todos = await client.getJson('/todos', decode: Todo.listFromJson);
+/// ```
+///
+/// The `forge` command, installed with the package, creates Flutter apps that
+/// use this client; see the "Building an app with forge" guide.
+///
+/// {@category calling-an-api}
+/// {@category creating-an-app}
+/// {@category security-model}
+library;
 
-// CLI exports
-export 'src/cli/cli_runner.dart';
-export 'src/cli/commands/create_command.dart';
-export 'src/cli/commands/generate_command.dart';
-export 'src/cli/commands/build_command.dart';
-export 'src/cli/commands/analyze_command.dart';
-export 'src/cli/templates/template_engine.dart';
-export 'src/cli/templates/feature_template.dart';
-export 'src/cli/templates/model_template.dart';
-export 'src/cli/templates/repository_template.dart';
+import 'src/network/forge_client.dart';
 
-// Architecture exports - Clean Architecture
-export 'src/architecture/clean_architecture/domain/use_case.dart';
-export 'src/architecture/clean_architecture/domain/entity.dart';
-export 'src/architecture/clean_architecture/data/repository.dart';
-export 'src/architecture/clean_architecture/data/datasource.dart';
-export 'src/architecture/clean_architecture/presentation/bloc.dart';
-export 'src/architecture/clean_architecture/presentation/state.dart';
+export 'package:http/http.dart' show MultipartFile;
 
-// Architecture exports - MVVM
-export 'src/architecture/mvvm/view_model.dart';
-export 'src/architecture/mvvm/model.dart';
-
-// Architecture exports - Riverpod
-export 'src/architecture/riverpod/providers.dart';
-export 'src/architecture/riverpod/notifiers.dart' hide PaginatedState, SelectionState;
-
-// Networking exports
-export 'src/networking/api_client.dart';
-export 'src/networking/interceptors.dart';
-export 'src/networking/endpoints.dart';
-
-// Storage exports
-export 'src/storage/local_storage.dart';
-export 'src/storage/secure_storage.dart';
-export 'src/storage/cache.dart';
-
-// Routing exports
-export 'src/routing/app_router.dart';
-export 'src/routing/route_guard.dart';
-export 'src/routing/deep_linking.dart';
-
-// DI exports
-export 'src/di/injection_container.dart';
-export 'src/di/service_locator.dart';
-
-// Theming exports
-export 'src/theming/app_theme.dart';
-export 'src/theming/colors.dart';
-export 'src/theming/typography.dart';
-
-// Localization exports
-export 'src/l10n/localization.dart';
-export 'src/l10n/translations.dart';
-
-// Utility exports
-export 'src/utils/extensions.dart';
-export 'src/utils/validators.dart';
-export 'src/utils/formatters.dart';
+export 'src/network/api_exception.dart';
+export 'src/network/auth.dart';
+export 'src/network/cache.dart';
+export 'src/network/cache_policy.dart';
+export 'src/network/cancel_token.dart' show CancelToken;
+export 'src/network/forge_client.dart';
+export 'src/network/forge_request.dart';
+export 'src/network/forge_response.dart';
+export 'src/network/interceptor.dart';
+export 'src/network/retry.dart';
