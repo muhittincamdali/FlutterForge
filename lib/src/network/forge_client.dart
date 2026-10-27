@@ -136,9 +136,10 @@ final class ForgeClient {
   /// removes (soft hyphen, zero-width and bidirectional marks, variation
   /// selectors) are dropped, so `..%00`, `.. `, `..%e2%80%8b` and `．．`
   /// count as `..`. A segment made only of dots, such as `...` or `‥`, is
-  /// refused too. The check runs on the path as given and again on the path
-  /// that is sent, after `Uri.parse` has decoded escapes such as `%32` and
-  /// encoded a stray `%`. A fragment is dropped.
+  /// refused too, and so is a path that still changes after eight rounds of
+  /// decoding and folding. The check runs on the path as given and again on
+  /// the path that is sent, after `Uri.parse` has decoded escapes such as
+  /// `%32` and encoded a stray `%`. A fragment is dropped.
   ///
   /// Query values are converted with `toString`; `null` values are skipped
   /// and an [Iterable] adds the parameter once per element.

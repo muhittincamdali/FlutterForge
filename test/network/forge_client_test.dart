@@ -229,6 +229,29 @@ void main() {
       expect(stopwatch.elapsed, lessThan(const Duration(seconds: 2)));
     });
 
+    test('refuses, in linear time, a path whose escapes peel off one level per round', () {
+      // 160 KB each. `%u0025` gives back a `%` for the escape after it, and
+      // `%%%3325` decodes to `%%325`, so each round of decoding unwrapped one
+      // level: the first path took 77 s before the number of rounds was
+      // limited. Both are refused even where the innermost escape is no dot.
+      const levels = 16000;
+      final chained = '%${'u0025' * levels}u002e';
+      final built = '${'%' * levels}${'3' * (levels - 1)}25';
+      final stopwatch = Stopwatch()..start();
+      for (final path in [
+        '/$chained$chained/admin',
+        '/files/%${'u0025' * levels}u0041',
+        '/files/${built}41',
+        '/files/$built$built',
+      ]) {
+        expect(() => client.resolve(path), throwsArgumentError, reason: path.substring(0, 40));
+      }
+      expect(stopwatch.elapsed, lessThan(const Duration(seconds: 2)));
+      // Levels that a server decoding twice or three times would read stay
+      // allowed when they make no dot segment.
+      expect(client.resolve('/files/%u0025u0025u0041').path, '/v1/files/%25u0025u0025u0041');
+    });
+
     test('keeps an encoded slash that is not part of a dot segment', () {
       expect(client.resolve('/files/a%2Fb').path, '/v1/files/a%2Fb');
       expect(client.resolve('/files/a;v=1').path, '/v1/files/a;v=1');

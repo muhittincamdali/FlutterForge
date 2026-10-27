@@ -7,8 +7,13 @@ import 'unicode_folds.dart';
 /// folded (NFKC_Casefold, then Windows best-fit mapping, from the tables in
 /// `unicode_folds.dart`) and escapes are decoded, again and again until
 /// nothing changes, so that every order of folding and decoding, and decoding
-/// twice, is covered. Only then is the path split into segments.
-bool hasDotSegment(String path) => _readAsServers(path).split(_separator).any(_isDotSegment);
+/// twice, is covered. Only then is the path split into segments. A path that
+/// still changes after eight rounds counts as holding a dot segment, so the
+/// check takes time linear in the length of the path.
+bool hasDotSegment(String path) {
+  final read = _readAsServers(path);
+  return read == null || read.split(_separator).any(_isDotSegment);
+}
 
 // `\` is a separator for IIS and for Uri.parse, which turns it into `/`.
 final RegExp _separator = RegExp(r'[/\\]');
@@ -26,17 +31,25 @@ final RegExp _onlyDots = RegExp(r'^\.+$');
 bool _isDotSegment(String segment) =>
     _onlyDots.hasMatch(segment.split(_segmentEnd).first.replaceAll(_droppedByServers, ''));
 
-// Each round decodes every escape and folds what it produced. The loop ends:
-// a decoded escape removes at least one `%` and gives at most one back (a
-// fold makes a `%` only on its own, which the generator checks), and when it
-// gives one back the path gets shorter.
-String _readAsServers(String path) {
+// A server that decodes twice takes two rounds to read, and no path in the
+// tests needs more than three rounds that change it. Each round takes time
+// linear in the path length, but some escapes peel off one level per round:
+// `%u0025u0025…u002e` gives one `%` back for each `%u0025`, and `%%%3325`
+// gives `%%325` and then `%25`, because a decoded `3` and the `%` before it
+// make a new escape. Without a limit such a path took time quadratic in its
+// length.
+const int _maxRounds = 8;
+
+// Each round decodes every escape and folds what it produced. Null when the
+// path still changes after [_maxRounds] rounds, which is read as a refusal.
+String? _readAsServers(String path) {
   var read = _fold(path);
-  while (true) {
+  for (var round = 0; round < _maxRounds; round++) {
     final next = _fold(_percentDecode(read));
     if (next == read) return read;
     read = next;
   }
+  return null;
 }
 
 final Map<int, String> _foldOf = {
