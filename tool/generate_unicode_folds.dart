@@ -8,7 +8,9 @@
 // https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WindowsBestFit/
 //
 //   dart run tool/generate_unicode_folds.dart <folder>
-//   dart format lib/src/network/unicode_folds.dart
+//
+// The table is passed through `dart format`, so the file it writes is the
+// committed one byte for byte.
 //
 // A character is listed when NFKC_Casefold removes it, or when NFKC_Casefold
 // followed by the Windows best-fit mapping of one of the code pages, or that
@@ -54,6 +56,12 @@ void main(List<String> arguments) {
   }
   _check(folds);
   File(_output).writeAsStringSync(_render(version, removed..sort(), folds));
+  // `dart run` starts the Dart executable, which also formats.
+  final format = Process.runSync(Platform.resolvedExecutable, ['format', _output]);
+  if (format.exitCode != 0) {
+    stderr.write(format.stderr);
+    exit(format.exitCode);
+  }
   stdout.writeln('$_output: Unicode $version, ${removed.length} removed, ${folds.length} folded.');
 }
 
@@ -70,9 +78,9 @@ int _rank(String text) {
 
 // Folding twice must give the same text, or a server that folds once and
 // the check, which folds until nothing changes, would read a path apart.
-// ForgeClient also reads a path again until it stops changing; that ends
-// because every decoded escape removes a `%`, unless it gives one back, and
-// then the path is shorter. A fold may therefore make a `%` only on its own.
+// ForgeClient also decodes and folds a path again until it stops changing,
+// for at most eight rounds. A fold may make a `%` only on its own, so that
+// folding one character never makes a whole escape such as `%2e`.
 void _check(Map<int, String> folds) {
   for (final MapEntry(key: rune, value: folded) in folds.entries) {
     final again = folded.runes.map((r) => folds[r] ?? String.fromCharCode(r)).join();
