@@ -15,7 +15,10 @@ jobs:
       contents: read
     uses: muhittincamdali/.github/.github/workflows/flutter-ci.yml@59e72703c617cfab0c12482c477e706c485ed683 # v1.1.1
 
+  # Both jobs call a workflow that shares one concurrency group per branch, so a job that is still
+  # waiting is cancelled by the other. Running the example after the package keeps both.
   example:
+    needs: flutter
     permissions:
       contents: read
     uses: muhittincamdali/.github/.github/workflows/flutter-ci.yml@59e72703c617cfab0c12482c477e706c485ed683 # v1.1.1
