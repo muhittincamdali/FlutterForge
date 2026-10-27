@@ -144,11 +144,28 @@ void main() {
         'https://session.example.com',
         'https://auth.example.com',
         'https://Client-Secret.example.com',
+        // A short name at the end of a word, and in the plural.
+        'https://userpin.example.com',
+        'https://mykey.example.com',
+        'https://pins-4831.example.com',
+        'https://cards-4111.example.com',
+        'https://cards2go.example',
+        'https://sids.example.com',
+        'https://spin.example.com',
+        'https://monkey.example.net',
+        'https://bearer-abcdefgh12345678.example.com',
       ]) {
         expect(described(url), 'GET https://[R]', reason: url);
       }
-      // A short name inside a longer word names nothing.
-      for (final host in ['spin.example.com', 'monkey.example.net', 'cards2go.example', 'passage.example']) {
+      // A short name at the start or in the middle of a word names nothing,
+      // and `pass` counts only as a whole word.
+      for (final host in [
+        'pinto.example.com',
+        'keyboard.example.net',
+        'passage.example',
+        'bypass.example',
+        'cardinal.example',
+      ]) {
         expect(described('https://$host/a'), 'GET https://$host', reason: host);
       }
     });

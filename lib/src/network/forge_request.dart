@@ -120,12 +120,15 @@ final class ForgeRequest {
   /// A label names a secret when it holds `password`, `token`, `secret`,
   /// `apikey`, `cookie`, `signature` or another long secret name anywhere,
   /// also across a `-` (`db-password`), or when one of its words, split at
-  /// `-` and between letters and digits, is a short one such as `pin`,
-  /// `key`, `pass`, `auth`, `card`, `otp`, `cvv` or `session`. The value can
-  /// sit right next to the name (`pin-4831.example.com`,
-  /// `password.hunter2.example`), so such a host is not written, even an
-  /// ordinary one such as `auth.example.com`. A short name inside a longer
-  /// word (`spin`, `monkey`) names nothing.
+  /// `-` and between letters and digits, ends with a short one such as
+  /// `pin`, `key`, `auth`, `card`, `otp`, `cvv` or `bearer` (`userpin`,
+  /// `mykey`) or is `pass`, `pw`, `sid` or `session`; an `s` after the name
+  /// counts as a plural (`pins-4831`, `cards`). The value can sit right next
+  /// to the name (`pin-4831.example.com`, `password.hunter2.example`), so
+  /// such a host is not written, even an ordinary one such as
+  /// `auth.example.com`, `spin.example.com` or `monkey.example.com`. A short
+  /// name at the start or in the middle of a word (`pinto`, `keyboard`,
+  /// `passage`, `bypass`) names nothing.
   ///
   /// A host looks like a secret when it holds:
   ///
@@ -199,12 +202,11 @@ const List<String> _secretNamesAnywhere = [
   'verificationcode',
   'cardnumber',
 ];
-// ... and these short ones only as a whole word, so that `spin` and `monkey`
-// are written. Words are split at `-` and between letters and digits.
-const Set<String> _secretWords = {
+// ... these short ones as a word or at the end of one (`userpin`, `mykey`),
+// which also hides `spin` and `monkey`; `bearer` is a name in some of the
+// rules, and the token after it can follow a `-` ...
+const List<String> _secretWordEnds = [
   'pwd',
-  'pw',
-  'pass',
   'key',
   'pin',
   'otp',
@@ -214,9 +216,12 @@ const Set<String> _secretWords = {
   'iban',
   'card',
   'auth',
-  'sid',
-  'session',
-};
+  'bearer',
+];
+// ... and these only as a whole word, so that `bypass` and `passage` are
+// written. Words are split at `-` and between letters and digits, and an
+// `s` after a name is read as a plural (`pins-4831`, `cards`).
+const Set<String> _secretWords = {'pw', 'pass', 'sid', 'session'};
 final RegExp _wordBreak = RegExp('-|(?<=[a-z])(?=[0-9])|(?<=[0-9])(?=[a-z])');
 
 // The scheme, host and port of `uri` for a message, with a host that is not
@@ -248,7 +253,12 @@ bool _looksLikeSecret(String label) {
 
 bool _namesSecret(String label) {
   final folded = label.replaceAll('-', '');
-  return _secretNamesAnywhere.any(folded.contains) || label.split(_wordBreak).any(_secretWords.contains);
+  return _secretNamesAnywhere.any(folded.contains) || label.split(_wordBreak).any(_isSecretWord);
+}
+
+bool _isSecretWord(String word) {
+  final forms = [word, if (word.endsWith('s')) word.substring(0, word.length - 1)];
+  return forms.any((form) => _secretWords.contains(form) || _secretWordEnds.any(form.endsWith));
 }
 
 // ISO 13616: the first four characters move to the end, letters become

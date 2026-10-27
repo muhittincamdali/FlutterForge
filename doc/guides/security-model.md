@@ -129,10 +129,13 @@ exception object for code that needs them.
   `password.hunter2.example`, so a host is printed as `[R]` when a label
   holds `password`, `token`, `secret`, `apikey`, `cookie`, `signature` or
   another long secret name anywhere, also across a `-` (`db-password`), or
-  when one of its words, split at `-` and between letters and digits, is a
-  short name such as `pin`, `key`, `pass`, `auth`, `card`, `otp`, `cvv` or
-  `session`. That also hides ordinary hosts such as `auth.example.com`. A
-  short name inside a longer word (`spin`, `monkey`) names nothing.
+  when one of its words, split at `-` and between letters and digits, ends
+  with a short name such as `pin`, `key`, `auth`, `card`, `otp`, `cvv` or
+  `bearer` (`userpin`, `mykey`), or is `pass`, `pw`, `sid` or `session`. An
+  `s` after a name counts as a plural (`pins-4831`, `cards-4111`). That also
+  hides ordinary hosts such as `auth.example.com`, `spin.example.com` and
+  `monkey.example.com`. A short name at the start or in the middle of a word
+  (`pinto`, `keyboard`, `passage`, `bypass`) names nothing.
 
   A host looks like a secret when it holds:
   - a card number: 13 or more digits, also when grouped with `-` as in
