@@ -9,6 +9,7 @@ import 'auth.dart';
 import 'cache.dart';
 import 'cache_policy.dart';
 import 'cancel_token.dart';
+import 'dot_segments.dart';
 import 'forge_request.dart';
 import 'forge_response.dart';
 import 'interceptor.dart';
@@ -123,22 +124,21 @@ final class ForgeClient {
   /// [ArgumentError]. A relative path
   /// may not contain `.` or `..` segments, so a value such as
   /// `'/files/$name'` with `name = '../admin'` cannot leave the base path;
-  /// such a path throws an [ArgumentError]. Segments are read the way a
-  /// server may read them: `%25` is decoded first (`%252e` counts as `.`),
-  /// segments are split at `/`, `\`, `%2f` and `%5c`, at their `%u` and
-  /// overlong UTF-8 forms (`%u002f`, `%c0%af`, `%e0%80%af`) and at the
-  /// full-width `／` and `＼` and the division slash `∕`, a segment ends at a
-  /// `;` parameter and at `%3f` and `%23` (`..;x` and `..%3f` count as `..`),
-  /// `%2e` and the full-width and small dots
-  /// count as `.`, as do `%u002e` and the overlong `%c0%ae`, the two-dot
-  /// leader `‥` and the ellipsis `…` count as dots, and control
-  /// characters and spaces, also the no-break space, and the soft hyphen
-  /// and zero-width characters are dropped, so `..%00`, `..%0a`, `.. `,
-  /// `..%c2%a0`, `..%c2%ad`, `..%e2%80%8b` and `．．` count as `..`. A segment
-  /// made only of dots, such as `...`, is refused too. The check runs on the path as given and again on
-  /// the path that is sent, after `Uri.parse` has decoded escapes such as
-  /// `%32` and encoded a stray `%`, so `%25%32%65` and `%2%65`, which are sent
-  /// as `%252e`, count as `.` as well. A fragment is dropped.
+  /// such a path throws an [ArgumentError]. Segments are read the way the
+  /// most lenient server or proxy may read them. Escapes are decoded (`%2e`,
+  /// the IIS form `%u002e`, UTF-8 including overlong forms such as `%c0%ae`,
+  /// and `%252e`, for servers that decode twice), and Unicode text is folded
+  /// with NFKC_Casefold and Windows best-fit mapping, both repeated until
+  /// nothing changes. Segments are then split at `/` and `\`, so `..%2fadmin`,
+  /// `..％２ｆadmin`, `..＼admin`, `..﹨admin` and `..¥admin` are split after
+  /// the dots; a segment ends at `;`, `?` and `#` (`..;x` and `..%3f` count as
+  /// `..`); and control characters, spaces and the characters NFKC_Casefold
+  /// removes (soft hyphen, zero-width and bidirectional marks, variation
+  /// selectors) are dropped, so `..%00`, `.. `, `..%e2%80%8b` and `．．`
+  /// count as `..`. A segment made only of dots, such as `...` or `‥`, is
+  /// refused too. The check runs on the path as given and again on the path
+  /// that is sent, after `Uri.parse` has decoded escapes such as `%32` and
+  /// encoded a stray `%`. A fragment is dropped.
   ///
   /// Query values are converted with `toString`; `null` values are skipped
   /// and an [Iterable] adds the parameter once per element.
@@ -151,7 +151,7 @@ final class ForgeClient {
         throw ArgumentError('The URL must not contain user information.', 'path');
       }
     } else {
-      if (_hasDotSegment(path.split(RegExp('[?#]')).first)) {
+      if (hasDotSegment(path.split(RegExp('[?#]')).first)) {
         throw ArgumentError('The path must not contain "." or ".." segments.', 'path');
       }
       final basePath = baseUrl.path.endsWith('/') ? baseUrl.path.substring(0, baseUrl.path.length - 1) : baseUrl.path;
@@ -165,7 +165,7 @@ final class ForgeClient {
       // Uri.parse decodes escapes of unreserved characters and encodes a `%`
       // that starts no valid escape, so `%25%32%65` and `%2%65` are sent as
       // `%252e`. The path that is sent is checked again for that reason.
-      if (_hasDotSegment(target.path.substring(basePath.length + 1))) {
+      if (hasDotSegment(target.path.substring(basePath.length + 1))) {
         throw ArgumentError('The path must not contain "." or ".." segments.', 'path');
       }
     }
@@ -542,65 +542,6 @@ final class ForgeClient {
       reasonPhrase: streamed.reasonPhrase,
     );
   }
-}
-
-// What a server may read as a path separator: `/`, `\` (Uri.parse turns it
-// into `/`), both of them percent-encoded, the IIS forms `%u002f` and
-// `%u005c`, the overlong UTF-8 forms that lenient decoders accept (`%c0%af`,
-// `%e0%80%af`, `%c1%9c`, `%e0%81%9c`), the full-width solidus and reverse
-// solidus, which Unicode normalisation turns into `/` and `\`, and the
-// division slash and set minus, which Windows best-fit mapping turns into
-// them. The last four raw, as `%u` forms or percent-encoded as UTF-8.
-final RegExp _segmentSeparator = RegExp(
-  r'[/\\\u2215\u2216\uFF0F\uFF3C]|%2f|%5c|%u(?:002f|005c|2215|2216|ff0f|ff3c)|%c0%af|%e0%80%af|%c1%9c|%e0%81%9c'
-  r'|%e2%88%95|%e2%88%96|%ef%bc%8f|%ef%bc%bc',
-  caseSensitive: false,
-);
-
-// Where a server may end a segment: Tomcat reads `..;x` as `..` with a
-// parameter, and a server or proxy that decodes the path before it splits
-// off the query or the fragment reads `..%3f` and `..%23` as `..`.
-final RegExp _segmentEnd = RegExp(';|%3b|%3f|%23', caseSensitive: false);
-
-// Servers that decode a path twice read `%252e` as `.`, so every `%` followed
-// by one or more `25` is read as `%` before the path is split, however often
-// it is nested. One pass keeps the check linear in the length of the path.
-final RegExp _encodedPercent = RegExp('%(?:25)+', caseSensitive: false);
-
-bool _hasDotSegment(String path) => path.replaceAll(_encodedPercent, '%').split(_segmentSeparator).any(_isDotSegment);
-
-// What a server may read as `.`: `%2e`, the IIS form `%u002e`, the overlong
-// UTF-8 forms `%c0%ae` and `%e0%80%ae` that lenient decoders accept, and the
-// full-width, small and one-dot-leader dots, the two-dot leader and the
-// ellipsis, which Unicode normalisation turns into `.`, `..` and `...`; raw,
-// as `%u` forms or percent-encoded as UTF-8. Each becomes one `.`, which is
-// enough: a segment made only of dots is refused whatever their number.
-final RegExp _dotLike = RegExp(
-  r'%2e|%u(?:002e|ff0e|fe52|2024|2025|2026)|%c0%ae|%e0%80%ae|[\uFF0E\uFE52\u2024\u2025\u2026]'
-  r'|%ef%bc%8e|%ef%b9%92|%e2%80%a[4-6]',
-  caseSensitive: false,
-);
-
-// What a server may drop from a segment: NUL, which ends a C string, the other
-// control characters (line breaks, tabs, DEL), which servers and proxies strip
-// or split at, spaces including the no-break space, which IIS and Windows
-// trim from the end of a name, and the soft hyphen, the zero-width space,
-// joiners, the word joiner and the byte order mark, which name folding
-// (NFKC_Casefold) and many text filters remove. Raw, as `%u` forms or
-// percent-encoded.
-final RegExp _droppedByServers = RegExp(
-  r'%[01][0-9a-f]|%7f|%20|%c2%a0|%c2%ad|%e2%80%8[b-d]|%e2%81%a0|%ef%bb%bf'
-  r'|%u(?:00[01][0-9a-f]|007f|0020|00a0|00ad|200[b-d]|2060|feff)'
-  r'|[\s\x00-\x1f\x7f\u00ad\u200b-\u200d\u2060\ufeff]',
-  caseSensitive: false,
-);
-
-final RegExp _onlyDots = RegExp(r'^\.+$');
-
-bool _isDotSegment(String segment) {
-  final name = segment.split(_segmentEnd).first;
-  final decoded = name.replaceAll(_dotLike, '.').replaceAll(_droppedByServers, '');
-  return _onlyDots.hasMatch(decoded);
 }
 
 // The messages do not repeat the value: it may hold a password or a key.
