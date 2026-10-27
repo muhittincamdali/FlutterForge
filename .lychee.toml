@@ -41,6 +41,9 @@ exclude = [
 # the ones it adds or removes. The path is the workspace of GitHub-hosted runners; a local run
 # passes the same two --remap options with its own path.
 remap = [
+  # The documentation site is published by the first run on main, so on a pull request it answers 404.
+  # Until then the link is checked against the repository page; the remap is removed once the site is live.
+  '^https://muhittincamdali\.github\.io/FlutterForge/?$ https://github.com/muhittincamdali/FlutterForge',
   '^https://raw\.githubusercontent\.com/muhittincamdali/FlutterForge/main/(.*)$ file:///home/runner/work/FlutterForge/FlutterForge/$1',
   '^https://github\.com/muhittincamdali/FlutterForge/(?:blob|tree)/main/(.*)$ file:///home/runner/work/FlutterForge/FlutterForge/$1',
 ]
